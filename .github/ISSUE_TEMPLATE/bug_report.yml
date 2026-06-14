@@ -1,0 +1,31 @@
+name: Bug report
+description: Report a reproducible aquote-router bug
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Minimal steps and code.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: textarea
+    id: audit
+    attributes:
+      label: Audit trace
+      description: Paste the trace_id and relevant sanitized audit fields.

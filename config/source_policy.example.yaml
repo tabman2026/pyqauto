@@ -1,0 +1,26 @@
+apis:
+  realtime_quotes:
+    allow_fallback: true
+    fallback_order:
+      - pytdx
+      - easyquotation_sina
+      - easyquotation_tencent
+
+  full_realtime_quotes:
+    allow_fallback: true
+    fallback_order:
+      - pytdx
+      - easyquotation_sina
+      - easyquotation_tencent
+
+  index_realtime:
+    allow_fallback: true
+    fallback_order:
+      - pytdx
+      - easyquotation_sina
+      - easyquotation_tencent
+
+  minute_kline:
+    allow_fallback: false
+    fallback_order:
+      - pytdx

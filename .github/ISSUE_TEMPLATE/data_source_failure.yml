@@ -1,0 +1,30 @@
+name: Data source failure
+description: Report a quote source failure or fallback issue
+title: "[Source failure]: "
+labels: ["source-failure"]
+body:
+  - type: input
+    id: api
+    attributes:
+      label: API name
+      placeholder: realtime_quotes
+    validations:
+      required: true
+  - type: input
+    id: symbols
+    attributes:
+      label: Symbols
+      placeholder: "000001,600000"
+    validations:
+      required: true
+  - type: input
+    id: trace_id
+    attributes:
+      label: Trace id
+    validations:
+      required: true
+  - type: textarea
+    id: attempts
+    attributes:
+      label: Attempts
+      description: Paste sanitized attempt fields from JSONL or SQLite audit.

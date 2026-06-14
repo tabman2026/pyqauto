@@ -1,0 +1,28 @@
+name: Adapter request
+description: Request support for a new data source adapter
+title: "[Adapter]: "
+labels: ["adapter"]
+body:
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: Name the provider and public API documentation.
+    validations:
+      required: true
+  - type: textarea
+    id: fields
+    attributes:
+      label: Fields
+      description: Map provider fields to QuoteRecord fields.
+    validations:
+      required: true
+  - type: checkboxes
+    id: tests
+    attributes:
+      label: Tests
+      options:
+        - label: Adapter unit tests can be written without live network access.
+          required: true
+        - label: Field normalization tests can be written with fixture data.
+          required: true
