@@ -27,22 +27,96 @@ Validation commands and results:
    Result: passed after network permission was granted for isolated build dependencies.
 
 Local git actions:
-- Git CLI was unavailable.
-- Dulwich was installed as an execution tool.
 - Repository initialized.
 - Branch set to main.
 - Commit created with message: chore: open-source aquote-router v0.1.0
 - Tag created: v0.1.0
 - Working tree clean at the time of tag creation.
 
-GitHub actions:
-- GitHub CLI was unavailable.
-- Public repository was not created.
-- Push was not completed.
-- GitHub Release was not created.
-- Manual instructions were generated.
+Task 015.1 execution log
+
+Environment checks:
+1. git --version
+   Result: passed, git version 2.54.0.windows.1.
+2. gh --version
+   Result: passed, gh version 2.94.0.
+3. gh auth status
+   Result: failed. Active account tabman2026 was present, but the default GitHub CLI credential was invalid.
+
+Execution decision:
+- Stopped before repository creation, push, release, and Actions inspection because GitHub CLI authentication failed.
+- Did not request or store any publishing credential.
+- Did not modify package code, workflows, README, or project configuration.
+
+Task 015.2 execution log
+
+Environment checks:
+1. gh auth status -h github.com
+   Result: passed. Account tabman2026 authenticated through keyring; Git operations protocol HTTPS; repo and workflow scopes present.
+2. gh repo view tabman2026/aquote-router
+   Result: repository did not exist before creation.
+
+Validation commands and results:
+1. python -X utf8 -m pytest -q
+   Result: passed, 15 tests.
+2. python -X utf8 scripts/check_release.py
+   Result: passed, Release scan passed.
+3. python -X utf8 scripts/smoke_test.py
+   Result: passed; policy APIs and CLI help validated.
+4. python -X utf8 -m build
+   Result: first sandboxed attempt failed because isolated build dependency download was blocked; escalated network run passed and generated wheel plus sdist.
+
+Git inspection:
+1. git status
+   Result: main branch, release report files modified from the previous blocked attempt.
+2. git branch --show-current
+   Result: main.
+3. git log --oneline -5
+   Result: 7bb31a2 chore: open-source aquote-router v0.1.0.
+4. git tag
+   Result: v0.1.0 exists.
+5. git remote -v
+   Result: no remote before repository creation; origin added after creation.
+
+GitHub repository actions:
+1. gh repo create aquote-router --public --description "A-share quote source router with pytdx failover, easyquotation fallback and audit trail"
+   Result: created https://github.com/tabman2026/aquote-router.
+2. git remote add origin https://github.com/tabman2026/aquote-router.git
+   Result: origin configured.
+3. gh repo edit tabman2026/aquote-router --description "..." --add-topic ...
+   Result: description and topics configured.
+4. git push -u origin main
+   Result: main pushed and upstream tracking set.
+5. git push origin v0.1.0
+   Result: v0.1.0 tag pushed.
+6. gh release view v0.1.0 --repo tabman2026/aquote-router
+   Result: release did not exist before creation.
+7. gh release create v0.1.0 --repo tabman2026/aquote-router --title "aquote-router v0.1.0" --notes-file CHANGELOG.md
+   Result: release created at https://github.com/tabman2026/aquote-router/releases/tag/v0.1.0.
+
+GitHub Actions check:
+1. gh run list --repo tabman2026/aquote-router --limit 10
+   Result: CI on main succeeded; CI on v0.1.0 succeeded; Publish on v0.1.0 failed.
+2. gh run view 27504819866 --repo tabman2026/aquote-router --log-failed
+   Result: Publish failed at PyPI Trusted Publishing exchange with invalid-publisher.
+
+PyPI workflow local review:
+- .github/workflows/publish.yml uses pypa/gh-action-pypi-publish.
+- .github/workflows/publish.yml grants id-token: write.
+- .github/workflows/publish.yml uses environment pypi.
+- .github/workflows/publish.yml does not contain PYPI_TOKEN.
+- .github/workflows/publish.yml does not define username or password credentials.
+- The repository does not contain .pypirc.
 
 PyPI actions:
-- publish.yml was generated with Trusted Publishing.
 - PyPI package was not published.
-- Trusted Publishing setup instructions were generated.
+- Publish failure reason: PyPI Trusted Publisher is not configured for tabman2026/aquote-router, workflow publish.yml, environment pypi.
+
+Boundary audit:
+- Does not include QMT, broker login, or real trading.
+- Does not include buy/sell points, candidate pool, promised return, or win rate.
+- Does not include token, cookie, account login state, or secret output.
+- Does not include out-of-scope output.
+
+Next manual action:
+- Configure PyPI Trusted Publishing in the PyPI project backend for project aquote-router, owner tabman2026, repository aquote-router, workflow publish.yml, and environment pypi.
