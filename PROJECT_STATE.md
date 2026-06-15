@@ -23,4 +23,10 @@ Source policy status:
 Validation status:
 
 - pytest passed locally.
-- Release scan and packaging checks are pending in this run.
+- ruff passed locally.
+- Release scan passed locally.
+- Offline smoke test passed locally.
+- Build passed locally.
+- GitHub Release v0.2.0 completed.
+- PyPI v0.2.0 completed.
+- Post-release cold-start smoke test passed.

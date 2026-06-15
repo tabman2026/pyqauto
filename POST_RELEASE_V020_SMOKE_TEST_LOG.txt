@@ -1,0 +1,12 @@
+2026-06-15 post-release v0.2.0 smoke test started.
+PyPI index showed aquote-router latest version 0.2.0.
+Created a fresh verification venv.
+Installed aquote-router from https://pypi.org/simple.
+Verified installed package version: 0.2.0.
+Verified QuoteRouter import.
+Verified aquote-router --help.
+Verified aquote-router minute --help.
+Verified aquote-router daily --help.
+Verified aquote-router kline --help.
+Verified aquote-router diagnose --json.
+Post-release v0.2.0 smoke test passed.

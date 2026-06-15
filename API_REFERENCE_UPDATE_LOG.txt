@@ -4,3 +4,9 @@ Added daily_kline and unified kline documentation.
 Confirmed K-line APIs are pytdx-only and do not use easyquotation fallback.
 Generated API_DOC_CODE_CONSISTENCY_REPORT.md.
 pytest result: 59 passed.
+ruff result: passed.
+release scan result: passed.
+offline smoke test result: passed.
+build result: passed.
+GitHub Release v0.2.0 completed.
+PyPI v0.2.0 cold-start smoke test passed.

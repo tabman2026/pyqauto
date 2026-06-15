@@ -40,6 +40,8 @@ SKIP_DIRS = {
     ".git",
     ".pytest_cache",
     ".ruff_cache",
+    ".venv",
+    ".venv_aquote_router_v020_check",
     "__pycache__",
     "build",
     "dist",
