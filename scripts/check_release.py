@@ -61,6 +61,17 @@ SAFE_CONTEXT_MARKERS = [
     "trusted publishing",
     "forbidden",
     "redacted",
+    "不提供",
+    "不生成",
+    "不接入",
+    "不输出",
+    "不保存",
+    "不创建",
+    "不发布",
+    "不对外",
+    "禁止",
+    "严禁",
+    "不得",
 ]
 
 

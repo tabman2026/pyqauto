@@ -6,18 +6,28 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![GitHub Release](https://img.shields.io/github/v/release/tabman2026/aquote-router?display_name=tag)](https://github.com/tabman2026/aquote-router/releases)
 
-`aquote-router` is a lightweight Python router for A-share quote sources. It
-normalizes realtime quote and K-line calls, records which source was tried, and
-returns auditable dataclasses for research tooling.
+aquote-router 是一个面向 A 股量化研究的轻量行情源路由器，支持 pytdx 主备切换、easyquotation fallback、实时行情、分钟K线、日K、统一 kline 接口、source policy 和 JSONL / SQLite 审计追踪。
 
-It solves a practical maintenance problem: public upstream quote libraries can
-fail by source, network, region, or time. The router centralizes source policy,
-pytdx failover, easyquotation realtime fallback, `trace_id`, and audit logs.
+A-share quote source router with pytdx failover, easyquotation fallback, K-line APIs and audit trail.
+
+It is designed for research scripts that need A股行情, A股实时行情, A股K线,
+分钟K线, 15分钟K线, 日K, source policy, 数据源 fallback, 行情审计, `trace_id`,
+JSONL, and SQLite audit records in one small Python package. Realtime routing
+uses pytdx first, then easyquotation Sina and Tencent fallback according to
+policy.
 
 Boundary: this project is data access infrastructure only. It does not provide investment advice,
 account login, order execution, screening, timing signals, or performance claims.
 
-Start here: [docs/NEW_USER_START_HERE.md](docs/NEW_USER_START_HERE.md)
+## 中文文档
+
+- 中文快速开始：[README.zh-CN.md](README.zh-CN.md)
+- 新手从这里开始：[docs/NEW_USER_START_HERE.md](docs/NEW_USER_START_HERE.md)
+- K线使用指南：[docs/KLINE_GUIDE.md](docs/KLINE_GUIDE.md)
+- 数据源说明：[docs/DATA_SOURCES.md](docs/DATA_SOURCES.md)
+- 常见问题排查：[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+
+English start here: [docs/NEW_USER_START_HERE.md](docs/NEW_USER_START_HERE.md)
 
 Data source policy: [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md)
 
