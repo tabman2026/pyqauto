@@ -26,6 +26,16 @@ K-line APIs never use easyquotation fallback. If all configured pytdx servers
 fail, the router raises a structured error and writes audit attempts plus
 `fallback_chain`.
 
+Free pytdx server availability changes by network, region, and time. Use
+`aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json`
+to generate an observed active local pool when pytdx calls time out. The active
+local file is a diagnostic result for the current environment and should not be
+committed.
+
+Realtime failures may fall back to `easyquotation_sina` or
+`easyquotation_tencent` according to source policy.
+K-line failures do not use easyquotation fallback.
+
 ## Source Field Values
 
 - `source="pytdx"` for pytdx realtime and K-line records.

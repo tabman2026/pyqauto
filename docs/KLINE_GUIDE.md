@@ -1,6 +1,6 @@
 # K-line Guide
 
-K-line APIs are pytdx-only in v0.2.0. They do not fall back to easyquotation.
+K-line APIs are pytdx-only in v0.2.1. They do not fall back to easyquotation.
 When pytdx cannot return bars, the router raises a structured error and writes
 audit attempts plus `fallback_chain`.
 
@@ -43,6 +43,24 @@ aquote-router daily 000001 --count 120 --json
 aquote-router kline 000001 --period 1d --count 120 --json
 ```
 
+If K-line calls time out, probe the pytdx server pool and write an active local
+pool:
+
+```bash
+aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+```
+
+Then use that pool for K-line:
+
+```bash
+aquote-router kline 000001 --period 15m --count 10 \
+  --pytdx-servers config/pytdx_servers.active.local.json --json
+```
+
+The active local file is a local diagnostic result and should not be committed.
+Free pytdx server availability changes by network, region, and time. A
+successful probe is not a guarantee that every environment can connect later.
+
 ## Return Model
 
 K-line APIs return `KlineBar` objects with:
@@ -69,6 +87,6 @@ K-line APIs return `KlineBar` objects with:
 
 ## Unsupported Features
 
-Adjusted bars are not supported in v0.2.0. There is no front-adjusted or
+Adjusted bars are not supported in v0.2.1. There is no front-adjusted or
 back-adjusted K-line API unless a future release adds explicit fields, tests,
 and documentation.

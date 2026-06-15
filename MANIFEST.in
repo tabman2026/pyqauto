@@ -10,6 +10,7 @@ recursive-include docs *.md
 recursive-include examples *.py
 recursive-include scripts *.py *.bat
 recursive-include tests *.py
+prune logs
 exclude config/pytdx_servers.active.local.json
 exclude config/pytdx_servers.local.json
 exclude LIVE_CHECK_REPORT.md
@@ -18,3 +19,5 @@ exclude LIVE_CHECK_LOG.txt
 exclude PYTDX_SERVER_POOL_REFRESH_REPORT.md
 exclude PYTDX_SERVER_POOL_REFRESH_SUMMARY.json
 exclude PYTDX_SERVER_POOL_REFRESH_LOG.txt
+global-exclude *.jsonl
+global-exclude *.sqlite3

@@ -25,8 +25,9 @@ Realtime APIs use the configured fallback chain:
 pytdx -> easyquotation_sina -> easyquotation_tencent
 ```
 
-K-line APIs are accepted only when they return `source=pytdx`. The tool does
-not fabricate bars and does not fall back to easyquotation for K-line data.
+K-line APIs are pytdx-only and are accepted only when they return
+`source=pytdx`. The tool does not fabricate bars and does not fall back to
+easyquotation for K-line data.
 
 ## Run
 
@@ -44,6 +45,12 @@ chcp 65001 >nul
 python -X utf8 scripts\live_check.py --json --config config\pytdx_servers.active.local.json
 ```
 
+The same command with POSIX-style paths is:
+
+```bash
+python -X utf8 scripts/live_check.py --json --config config/pytdx_servers.active.local.json
+```
+
 The script writes:
 
 - `LIVE_CHECK_REPORT.md`
@@ -55,8 +62,22 @@ The script writes:
 All JSON and JSONL files are written as UTF-8 with `ensure_ascii=False`.
 
 `config\pytdx_servers.active.local.json` is a local diagnostic input generated
-by `scripts\pytdx_server_probe.py`. It is intentionally ignored by git because
-public pytdx server availability changes over time.
+by `aquote-router probe-pytdx` or `scripts\pytdx_server_probe.py`. It is
+intentionally ignored by git because free pytdx server availability changes by
+network, region, and time. A local active pool is an observed diagnostic result,
+not a long-term stable official server list.
+
+If K-line calls time out, refresh the local pool first:
+
+```bat
+aquote-router probe-pytdx --json --output config\pytdx_servers.active.local.json
+```
+
+Then run K-line checks with the active local pool:
+
+```bat
+aquote-router kline 000001 --period 15m --count 10 --pytdx-servers config\pytdx_servers.active.local.json --json
+```
 
 ## CLI Checks
 

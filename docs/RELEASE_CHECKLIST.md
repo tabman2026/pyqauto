@@ -4,6 +4,7 @@
 
 ```bash
 python -X utf8 -m pytest -q
+python -X utf8 -m ruff check .
 python -X utf8 scripts/check_release.py
 python -X utf8 scripts/smoke_test.py
 python -X utf8 -m build
@@ -18,7 +19,7 @@ scripts\windows_acceptance.bat
 ## GitHub
 
 - Confirm CI passes on Python 3.10, 3.11 and 3.12.
-- Create tag `v0.2.0`.
+- Create tag `v0.2.1`.
 - Create a GitHub Release from `CHANGELOG.md`.
 
 ## PyPI

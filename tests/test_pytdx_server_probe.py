@@ -5,6 +5,8 @@ import json
 import sys
 from pathlib import Path
 
+from aquote_router import pytdx_probe
+
 
 def _load_probe_module():
     root = Path(__file__).resolve().parents[1]
@@ -101,3 +103,86 @@ def test_build_active_config_uses_successful_sorted_results() -> None:
             "enabled": True,
         },
     ]
+
+
+def test_run_probe_writes_required_result_fields_without_network(tmp_path, monkeypatch) -> None:
+    config_path = tmp_path / "servers.json"
+    output_path = tmp_path / "active.json"
+    config_path.write_text(
+        json.dumps(
+            [
+                {
+                    "host": "1.1.1.1",
+                    "port": 7709,
+                    "role": "primary",
+                    "latency_ms": 10,
+                    "enabled": True,
+                }
+            ],
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    def fake_probe_candidates(candidates, **kwargs):
+        assert kwargs["timeout"] == 3.0
+        assert kwargs["minute_period"] == "15m"
+        return [
+            {
+                "host": candidates[0].host,
+                "port": candidates[0].port,
+                "role": candidates[0].role,
+                "source": candidates[0].source,
+                "connect_success": True,
+                "realtime_success": True,
+                "realtime_quote_success": True,
+                "minute_kline_success": True,
+                "daily_kline_success": True,
+                "kline_success": True,
+                "latency_ms": 12.4,
+                "total_latency_ms": 18.1,
+                "realtime_count": 1,
+                "realtime_quote_count": 1,
+                "minute_kline_count": 10,
+                "daily_kline_count": 10,
+                "error": None,
+                "errors": {},
+            }
+        ]
+
+    monkeypatch.setattr(pytdx_probe, "_load_official_pytdx_servers", lambda: ([], [], None))
+    monkeypatch.setattr(pytdx_probe, "_probe_candidates", fake_probe_candidates)
+
+    summary = pytdx_probe.run_probe(
+        config_path=config_path,
+        output_path=output_path,
+        local_config_path=None,
+        timeout=3,
+        limit=0,
+        workers=1,
+    )
+
+    assert output_path.exists()
+    assert json.loads(output_path.read_text(encoding="utf-8")) == [
+        {
+            "host": "1.1.1.1",
+            "port": 7709,
+            "role": "primary",
+            "latency_ms": 12,
+            "enabled": True,
+        }
+    ]
+    result = summary["results"][0]
+    for key in [
+        "host",
+        "port",
+        "role",
+        "connect_success",
+        "realtime_success",
+        "minute_kline_success",
+        "daily_kline_success",
+        "latency_ms",
+        "error",
+    ]:
+        assert key in result
+    assert summary["active_config_path"].endswith("active.json")

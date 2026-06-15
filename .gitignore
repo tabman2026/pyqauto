@@ -12,6 +12,8 @@ config/pytdx_servers.active.local.json
 config/pytdx_servers.local.json
 .venv/
 .venv_aquote_router_v020_check/
+.venv_aquote_router_v021_check/
 venv/
 *.sqlite3
+*.jsonl
 *.db

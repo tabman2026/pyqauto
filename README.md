@@ -12,6 +12,7 @@ order execution, account login, screening, timing signals, or performance claims
 - `minute_kline`, `daily_kline`, and unified `kline` are pytdx-only.
 - pytdx servers are ordered by `primary -> hot_backup -> backup`, then by
   `latency_ms`.
+- `probe-pytdx` can generate a local active pytdx server pool for diagnostics.
 - Return models include `source`, `source_level`, `is_fallback`,
   `fallback_from`, and `trace_id`.
 - JSONL and SQLite audit logs record attempts, `fallback_chain`,
@@ -78,11 +79,30 @@ aquote-router minute 000001 --period 15m --count 120
 aquote-router daily 000001 --count 120
 aquote-router kline 000001 --period 15m --count 120
 aquote-router kline 000001 --period 1d --count 120
+aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
 aquote-router diagnose --json
 ```
 
 Use `--json` for complete output, especially when table columns are too wide.
 CLI failures return a non-zero exit code and a structured project error code.
+
+When K-line calls time out, first refresh a local pytdx pool:
+
+```bash
+aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+```
+
+Then pass the active local pool explicitly:
+
+```bash
+aquote-router kline 000001 --period 15m --count 10 \
+  --pytdx-servers config/pytdx_servers.active.local.json --json
+```
+
+`config/pytdx_servers.active.local.json` is an observed local diagnostic result
+and should not be committed. Free pytdx server availability changes by network,
+region, and time; this project does not promise that every environment can
+connect at every time.
 
 ## Source Policy
 
@@ -103,6 +123,8 @@ kline: pytdx only
 ```
 
 K-line APIs never fall back to easyquotation and never fabricate bars.
+Realtime APIs may fall back to `easyquotation_sina` or `easyquotation_tencent`
+after pytdx failures, but K-line APIs do not use easyquotation fallback.
 
 ## Core Docs
 

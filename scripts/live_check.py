@@ -664,9 +664,11 @@ def _write_report(summary: dict[str, Any]) -> None:
             "",
             "## Notes",
             "",
-            "- Realtime routing is checked through pytdx, then easyquotation Sina, then easyquotation Tencent.",
+            "- Realtime routing is checked through pytdx, then easyquotation Sina, "
+            "then easyquotation Tencent.",
             "- K-line checks are accepted only when returned rows report `source=pytdx`.",
-            "- Failed live source calls are recorded as diagnostic failures with the observed reason.",
+            "- Failed live source calls are recorded as diagnostic failures with "
+            "the observed reason.",
         ]
     )
     REPORT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")

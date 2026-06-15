@@ -11,6 +11,15 @@ import click
 from aquote_router import __version__
 from aquote_router.diagnostics import build_diagnostics
 from aquote_router.exceptions import QuoteRouterError
+from aquote_router.pytdx_probe import (
+    DEFAULT_CONFIG as DEFAULT_PROBE_CONFIG,
+)
+from aquote_router.pytdx_probe import (
+    DEFAULT_OUTPUT as DEFAULT_PROBE_OUTPUT,
+)
+from aquote_router.pytdx_probe import (
+    run_probe,
+)
 from aquote_router.router import QuoteRouter
 
 DEFAULT_PYTDX_SERVERS = "config/pytdx_servers.example.json"
@@ -59,6 +68,65 @@ def diagnose(options: dict[str, Any], diagnose_json_output: bool) -> None:
     _print_payload(
         payload,
         json_output=bool(options["json_output"] or diagnose_json_output),
+    )
+
+
+@main.command("probe-pytdx")
+@click.option("--config", "config_path", default=DEFAULT_PROBE_CONFIG, show_default=True)
+@click.option("--output", "output_path", default=DEFAULT_PROBE_OUTPUT, show_default=True)
+@click.option("--json", "probe_json_output", is_flag=True)
+@click.option("--timeout", default=3.0, show_default=True, type=float)
+@click.option(
+    "--limit",
+    default=0,
+    show_default=True,
+    type=int,
+    help="Limit probed candidates after loading and de-duplicating; 0 means no limit.",
+)
+@click.option("--symbol", default="000001", show_default=True)
+@click.option(
+    "--minute-period",
+    default="15m",
+    show_default=True,
+    type=click.Choice(["1m", "5m", "15m", "30m", "60m"]),
+)
+@click.option("--count", default=10, show_default=True, type=int)
+@click.option("--workers", default=8, show_default=True, type=int)
+def probe_pytdx(
+    config_path: str,
+    output_path: str,
+    probe_json_output: bool,
+    timeout: float,
+    limit: int,
+    symbol: str,
+    minute_period: str,
+    count: int,
+    workers: int,
+) -> None:
+    """Probe pytdx server availability and write a local active pool."""
+
+    try:
+        payload = run_probe(
+            config_path=config_path,
+            output_path=output_path,
+            timeout=timeout,
+            limit=limit,
+            symbol=symbol,
+            minute_period=minute_period,
+            count=count,
+            workers=workers,
+        )
+    except (FileNotFoundError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    if probe_json_output:
+        click.echo(json.dumps(payload, ensure_ascii=False, indent=2))
+        return
+    click.echo(
+        "Pytdx probe finished: "
+        f"{payload['connect_success_count']}/{payload['probe_server_count']} "
+        "servers connected. "
+        f"Active config: {payload['active_config_path']}"
     )
 
 
@@ -167,6 +235,7 @@ def daily(
 @click.argument("symbol")
 @click.option("--period", default="1m", show_default=True)
 @click.option("--count", default=120, show_default=True, type=int)
+@click.option("--pytdx-servers", default=None, help="Override pytdx server config for this call.")
 @click.option("--json", "command_json_output", is_flag=True)
 @click.pass_obj
 def kline(
@@ -174,10 +243,13 @@ def kline(
     symbol: str,
     period: str,
     count: int,
+    pytdx_servers: str | None,
     command_json_output: bool,
 ) -> None:
     """Fetch pytdx-only kline records through the unified API."""
 
+    if pytdx_servers:
+        options = {**options, "pytdx_servers_path": pytdx_servers}
     router = _router_from_options(options)
     try:
         records = router.kline(symbol, period=period, count=count)

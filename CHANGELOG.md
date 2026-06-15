@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.1 - 2026-06-15
+
+- Added and documented pytdx server probe diagnostics.
+- Added `aquote-router probe-pytdx`.
+- Strengthened K-line timeout troubleshooting docs.
+- Strengthened live check docs for active local pytdx pools.
+- Clarified that active local server pools are not committed to Git.
+- Kept the project boundary unchanged and added no investment advice workflow.
+
 ## 0.2.0 - 2026-06-15
 
 - Added `daily_kline`.
