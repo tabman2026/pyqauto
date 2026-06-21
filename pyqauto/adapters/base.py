@@ -7,6 +7,11 @@ from typing import Any
 
 from pyqauto.exceptions import AdapterError, UnsupportedSymbolError
 from pyqauto.models import KlineBar, QuoteRecord
+from pyqauto.source_schema import (
+    StandardValidationResult,
+    inspect_raw_schema,
+    validate_standard_rows,
+)
 
 
 @dataclass(frozen=True)
@@ -69,6 +74,30 @@ class BaseQuoteAdapter:
     ) -> list[KlineBar]:
         raise AdapterError(f"{self.source} does not support daily_kline")
 
+    def fetch_raw(self, *args: Any, **kwargs: Any) -> Any:
+        """Fetch one raw provider payload without standardizing it."""
+
+        raise AdapterError(f"{self.source} does not support fetch_raw")
+
+    def inspect_raw_schema(self, raw: Any = None, **kwargs: Any) -> dict[str, Any]:
+        """Write a raw schema probe for a fetched payload."""
+
+        return inspect_raw_schema(source_name=self.source, raw=raw, **kwargs)
+
+    def normalize_to_standard(self, raw: Any, **kwargs: Any) -> list[dict[str, Any]]:
+        """Normalize a raw payload to the standard adapter schema."""
+
+        raise AdapterError(f"{self.source} does not support normalize_to_standard")
+
+    def validate_standard_output(
+        self,
+        rows: list[dict[str, Any]],
+        **kwargs: Any,
+    ) -> StandardValidationResult:
+        """Validate standard rows before the public router consumes them."""
+
+        return validate_standard_rows(rows, **kwargs)
+
 
 def as_float(value: Any) -> float | None:
     """Best-effort conversion to float with empty values mapped to None."""
@@ -105,14 +134,14 @@ def code_for_symbol(symbol: str) -> str:
 def normalize_symbol(symbol: str) -> NormalizedSymbol:
     """Normalize documented A-share symbol forms.
 
-    Supported forms are six digits and six digits followed by .SH or .SZ.
-    Bare 6/5/9 prefixes use Shanghai, while bare 0/3 prefixes use Shenzhen.
+    Supported forms are six digits and six digits followed by .SH, .SZ, or .BJ.
+    Bare 6/5/9 prefixes use Shanghai, while bare 0/1/2/3 prefixes use Shenzhen.
     """
 
     raw = str(symbol or "").strip().upper()
     if "." in raw:
         code, separator, suffix = raw.partition(".")
-        if separator != "." or suffix not in {"SH", "SZ"}:
+        if separator != "." or suffix not in {"SH", "SZ", "BJ"}:
             raise UnsupportedSymbolError(f"unsupported symbol suffix: {symbol}")
         if not _is_six_digit_code(code):
             raise UnsupportedSymbolError(f"unsupported symbol code: {symbol}")
@@ -122,8 +151,10 @@ def normalize_symbol(symbol: str) -> NormalizedSymbol:
         raise UnsupportedSymbolError(f"unsupported symbol code: {symbol}")
     if raw.startswith(("5", "6", "9")):
         return NormalizedSymbol(code=raw, market=1)
-    if raw.startswith(("0", "3")):
+    if raw.startswith(("0", "1", "2", "3")):
         return NormalizedSymbol(code=raw, market=0)
+    if raw.startswith(("4", "8")):
+        return NormalizedSymbol(code=raw, market=0, suffix="BJ")
     raise UnsupportedSymbolError(f"unsupported symbol prefix: {symbol}")
 
 

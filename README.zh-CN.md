@@ -12,7 +12,7 @@ pyqauto 是一个面向 A 股量化研究和数据验证脚本的轻量行情源
 
 ## 不做什么
 
-本项目不提供投资建议，不生成候选股池，不生成买卖点，不接入真实交易，不保证公开免费行情源 100% 准确、实时、完整、可用。
+本项目不提供投资建议，不接入下单或执行系统，不保证公开免费行情源 100% 准确、实时、完整、可用。
 
 它也不生产行情数据、不对外再分发行情数据、不绕过上游限制、不保存账号登录态、不提供自动化下单能力。
 
@@ -95,6 +95,23 @@ pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 - `--symbol 000001`：用于探测的股票代码。
 - `--minute-period 15m`：用于分钟K线探测的周期。
 - `--count 10`：用于 K线探测的条数。
+
+## 如何运行 source schema live probe
+
+```bash
+pyqauto source-schema-probe-live --json
+pyqauto source-schema-probe-live --symbols 000001 600000 --json
+```
+
+该命令会连接上游公开源，检查 raw 字段是否仍能标准化为 pyqauto public
+records。`WARN` 表示至少一个源通过、另一个源不可用或被 schema 校验拒绝；
+`FAIL` 表示没有源通过，CLI 会返回非 0。未通过校验的行只写入
+`rejected_reason`、`schema_drift_fields` 或 `error_message`，不会进入 public
+records。
+
+AkShare `成交量` 按手转股，`成交额` 保持元；Tencent
+`价格/成交量(手)/成交额` 会解析成交量和成交额后再校验。更多细节见
+[docs/SOURCE_SCHEMA_LIVE_PROBE.md](docs/SOURCE_SCHEMA_LIVE_PROBE.md)。
 
 ## 如何查看 source / source_level / trace_id
 
@@ -218,7 +235,7 @@ pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 
 ## 免责声明
 
-本项目仅用于本地研究和工程验证场景中的行情源路由与审计追踪。本项目不提供投资建议，不生成候选股池，不生成买卖点，不接入真实交易，不保证公开免费行情源 100% 准确、实时、完整、可用。使用者需要自行验证数据质量，并遵守各上游项目和数据源的使用条款。
+本项目仅用于本地研究和工程验证场景中的行情源路由与审计追踪。本项目不提供投资建议，不接入下单或执行系统，不保证公开免费行情源 100% 准确、实时、完整、可用。使用者需要自行验证数据质量，并遵守各上游项目和数据源的使用条款。
 
 ## License
 

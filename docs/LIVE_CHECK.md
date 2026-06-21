@@ -94,11 +94,9 @@ pyqauto kline 000001 --period 1d --count 10 --json
 
 ## Boundaries
 
-This tool is not an API service, not a data redistribution service, and not a
-trading integration. It does not store cookies, tokens, account credentials, or
-brokerage login state. It does not output trading plans, candidate pools,
-position sizing, timing signals, return promises, win-rate claims, or investment
-advice.
+This tool is not an API service or data redistribution service. It does not
+store account credentials. It does not provide investment advice or connect to
+order execution.
 
 Live source failures are valid diagnostic outcomes. The report records the
 observed error reason, source attempts, audit status, and acceptance result.

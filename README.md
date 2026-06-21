@@ -18,7 +18,7 @@ pyqauto kline 000001 --period 15m --count 10
 pyqauto probe-pytdx --json
 ```
 
-本项目不提供投资建议，不生成候选股池，不生成买卖点，不接入真实交易，不保证公开免费行情源 100% 准确、实时、完整、可用。
+本项目不提供投资建议，不接入下单或执行系统，不保证公开免费行情源 100% 准确、实时、完整、可用。
 
 [![PyPI version](https://img.shields.io/pypi/v/pyqauto.svg)](https://pypi.org/project/pyqauto/)
 [![Python versions](https://img.shields.io/pypi/pyversions/pyqauto.svg)](https://pypi.org/project/pyqauto/)
@@ -29,8 +29,8 @@ pyqauto probe-pytdx --json
 It is designed for research scripts that need A股行情, A股实时行情, A股K线,
 分钟K线, 15分钟K线, 日K, source policy, 数据源 fallback, 行情审计, `trace_id`,
 JSONL, and SQLite audit records in one small Python package. Realtime routing
-uses pytdx first, then easyquotation Sina and Tencent fallback according to
-policy.
+uses pytdx first, then AkShare Eastmoney spot, easyquotation Sina, and
+easyquotation Tencent fallback according to policy.
 
 Boundary: this project is data access infrastructure only. It does not provide investment advice,
 account login, order execution, screening, timing signals, or performance claims.
@@ -99,9 +99,23 @@ not be committed.
 
 ## Features
 
-- `realtime_quotes`, `full_realtime_quotes`, and `index_realtime` route through
-  `pytdx -> easyquotation_sina -> easyquotation_tencent`.
+- `realtime_quotes` and `full_realtime_quotes` route through
+  `pytdx -> akshare_em_spot -> easyquotation_sina -> easyquotation_tencent`.
+- `index_realtime` routes through `pytdx -> easyquotation_sina ->
+  easyquotation_tencent`.
 - `minute_kline`, `daily_kline`, and unified `kline` are pytdx-only.
+- Source adapters expose `fetch_raw()`, `inspect_raw_schema()`,
+  `normalize_to_standard()`, and `validate_standard_output()`.
+- Raw schema probes write UTF-8 JSON to `reports/latest/source_schema_probe.json`
+  and UTF-8 JSONL to `logs/source_schema_probe.jsonl`.
+- Live schema probes write UTF-8 JSON to
+  `reports/latest/source_schema_probe_live.json` and UTF-8 JSONL to
+  `logs/source_schema_probe_live.jsonl` when explicitly run with
+  `pyqauto source-schema-probe-live --json`.
+- Schema drift guards mark missing or renamed core fields as `schema_drift` or
+  `field_missing`; invalid rows are not exposed as public records.
+- AkShare volume is converted from lots to shares, AkShare amount remains yuan,
+  and Tencent composite volume/amount fields are parsed before validation.
 - pytdx servers are ordered by `primary -> hot_backup -> backup`, then by
   `latency_ms`.
 - `probe-pytdx` can generate a local active pytdx server pool for diagnostics.
@@ -110,6 +124,9 @@ not be committed.
 - JSONL and SQLite audit logs record attempts, `fallback_chain`,
   `selected_source`, duration, record count, and final error details.
 - The default test suite is offline. Live smoke checks require explicit opt-in.
+
+See [docs/SOURCE_SCHEMA_LIVE_PROBE.md](docs/SOURCE_SCHEMA_LIVE_PROBE.md) for
+live probe status, unit rules, and troubleshooting.
 
 Local development:
 

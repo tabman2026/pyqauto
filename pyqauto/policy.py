@@ -28,7 +28,12 @@ SUPPORTED_APIS = {
 SUPPORTED_MINUTE_KLINE_PERIODS = ("1m", "5m", "15m", "30m", "60m")
 SUPPORTED_DAILY_KLINE_PERIODS = ("1d",)
 SUPPORTED_KLINE_PERIODS = SUPPORTED_MINUTE_KLINE_PERIODS + SUPPORTED_DAILY_KLINE_PERIODS
-SUPPORTED_SOURCES = {"pytdx", "easyquotation_sina", "easyquotation_tencent"}
+SUPPORTED_SOURCES = {
+    "pytdx",
+    "akshare_em_spot",
+    "easyquotation_sina",
+    "easyquotation_tencent",
+}
 
 
 @dataclass(frozen=True)

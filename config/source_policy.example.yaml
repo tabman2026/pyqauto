@@ -3,6 +3,7 @@ apis:
     allow_fallback: true
     fallback_order:
       - pytdx
+      - akshare_em_spot
       - easyquotation_sina
       - easyquotation_tencent
 
@@ -10,6 +11,7 @@ apis:
     allow_fallback: true
     fallback_order:
       - pytdx
+      - akshare_em_spot
       - easyquotation_sina
       - easyquotation_tencent
 

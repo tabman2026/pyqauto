@@ -1,6 +1,6 @@
 # K-line Guide
 
-K-line APIs are pytdx-only in v0.3.0. They do not fall back to easyquotation.
+K-line APIs are pytdx-only. They do not fall back to easyquotation.
 When pytdx cannot return bars, the router raises a structured error and writes
 audit attempts plus `fallback_chain`.
 
@@ -89,6 +89,6 @@ K-line APIs return `KlineBar` objects with:
 
 ## Unsupported Features
 
-Adjusted bars are not supported in v0.3.0. There is no front-adjusted or
+Adjusted bars are not supported. There is no front-adjusted or
 back-adjusted K-line API unless a future release adds explicit fields, tests,
 and documentation.

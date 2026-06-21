@@ -16,6 +16,7 @@ and returns fields such as:
 - `enabled_sources`
 - `supported_apis`
 - `supported_kline_periods`
+- `source_schema_probe.latest_live_probe`
 - `recent_trace_id`
 
 ## Common Checks
@@ -66,3 +67,25 @@ Live smoke tests must be explicitly enabled:
 set ENABLE_LIVE_SMOKE_TEST=1
 python -X utf8 scripts/smoke_test.py
 ```
+
+## Source Schema Live Probe
+
+Run live source schema validation explicitly:
+
+```bash
+pyqauto source-schema-probe-live --json
+```
+
+`PASS` means every probed source passed schema validation. `WARN` means at least
+one source passed and at least one source failed or was rejected; this is useful
+for diagnosing partial upstream availability. `FAIL` means no source passed and
+the CLI exits with a non-zero status.
+
+If AkShare is closed by the remote side, read `error_message` as an upstream or
+network availability event. If pytdx times out, refresh the active local pool
+with `pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json`
+and retry from the same network.
+
+Only schema-validated rows become public records. Rows with missing core fields
+or schema drift are rejected and recorded in `rejected_reason` and
+`schema_drift_fields`.

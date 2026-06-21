@@ -16,10 +16,10 @@ Used by `realtime_quotes`, `full_realtime_quotes`, and `index_realtime`.
 | `high` | Session high price. |
 | `low` | Session low price. |
 | `pre_close` | Previous close when available. |
-| `volume` | Upstream numeric volume value, converted to `float` when possible. |
-| `amount` | Upstream numeric amount value, converted to `float` when possible. |
+| `volume` | Standardized share count from adapter `volume_shares`. |
+| `amount` | Standardized RMB yuan amount from adapter `amount_yuan`. |
 | `datetime` | Upstream timestamp string. |
-| `source` | Selected adapter: `pytdx`, `easyquotation_sina`, or `easyquotation_tencent`. |
+| `source` | Selected adapter: `pytdx`, `akshare_em_spot`, `easyquotation_sina`, or `easyquotation_tencent`. |
 | `source_level` | pytdx server role: `primary`, `hot_backup`, or `backup`; usually empty for easyquotation. |
 | `fallback_from` | Last failed source before the selected source. |
 | `is_fallback` | `True` when one or more earlier sources failed. |
@@ -51,3 +51,12 @@ Used by `minute_kline`, `daily_kline`, and `kline`.
 | `trace_id` | Audit correlation id for this router call. |
 
 `KlineBar.price` is a compatibility property that returns `close`.
+
+## Adapter Standard Schema
+
+Before public records are returned, source adapters normalize raw payloads to a
+standard adapter schema with fields including `symbol`, `symbol_raw`, `market`,
+`trade_time`, `fetch_time`, `last_price`, `pre_close`, `open`, `high`, `low`,
+`change`, `pct_chg`, `volume_shares`, `amount_yuan`, `turnover_rate`,
+`source_name`, `source_api`, `schema_version`, `adapter_status`, and
+`raw_payload_path`.

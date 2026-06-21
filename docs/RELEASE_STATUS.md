@@ -3,7 +3,7 @@
 ## Current Release
 
 - Recommended package name: `pyqauto`
-- Current version: `0.3.0`
+- Current version: `0.3.1`
 - GitHub: https://github.com/tabman2026/pyqauto
 - PyPI: https://pypi.org/project/pyqauto/
 - Install command: `python -X utf8 -m pip install pyqauto -i https://pypi.org/simple`
@@ -21,12 +21,13 @@
 - GitHub repository rename to `tabman2026/pyqauto`: completed.
 - GitHub Release `v0.3.0`: completed.
 - PyPI publication for `pyqauto 0.3.0`: completed.
+- GitHub Release `v0.3.1`: pending.
+- PyPI publication for `pyqauto 0.3.1`: pending GitHub Actions Trusted Publishing.
 - Local `twine upload`: not used.
-- PyPI token or password-based publishing: not required.
+- Password-based PyPI publishing: not required.
 
 ## Audit Conclusion
 
 This public status document contains only release state and migration guidance.
-It does not include local filesystem paths, credential material, broker login
-state, trading automation, candidate pools, buy/sell points, yield promises, or
-win-rate claims.
+It does not include local filesystem paths, credential material, investment
+advice, order execution, or data redistribution claims.

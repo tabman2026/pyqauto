@@ -48,6 +48,7 @@ def test_diagnose_json_can_run_and_has_required_fields() -> None:
         "supported_apis",
         "supported_kline_periods",
         "audit_output_paths",
+        "source_schema_probe",
         "recent_trace_id",
     ]:
         assert key in payload
@@ -56,6 +57,8 @@ def test_diagnose_json_can_run_and_has_required_fields() -> None:
     assert payload["pytdx_server_config_parseable"] is True
     assert "minute_kline" in payload["supported_apis"]
     assert "1m" in payload["supported_kline_periods"]
+    assert "akshare_em_spot" in payload["source_schema_probe"]["sources"]
+    assert "volume_shares" in payload["source_schema_probe"]["standard_fields"]
 
     output = result.stdout.lower()
     blocked_paths = ["c:" + "\\users", "/" + "users" + "/", "desktop" + "/codex"]

@@ -13,6 +13,7 @@ def test_source_policy_example_parses() -> None:
     assert policy.api("realtime_quotes").allow_fallback is True
     assert policy.api("realtime_quotes").fallback_order == [
         "pytdx",
+        "akshare_em_spot",
         "easyquotation_sina",
         "easyquotation_tencent",
     ]

@@ -7,7 +7,7 @@ from pathlib import Path
 from .models import KlineBar, QuoteRecord
 from .router import QuoteRouter
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 _default_router: QuoteRouter | None = None
 

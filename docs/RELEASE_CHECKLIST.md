@@ -19,7 +19,7 @@ scripts\windows_acceptance.bat
 ## GitHub
 
 - Confirm CI passes on Python 3.10, 3.11 and 3.12.
-- Create tag `v0.3.0`.
+- Create tag `v0.3.1`.
 - Create a GitHub Release from `CHANGELOG.md`.
 
 ## PyPI

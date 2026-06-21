@@ -7,10 +7,21 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+from pyqauto.adapters.akshare_em_spot_adapter import (
+    AKSHARE_EM_SPOT_FIELD_MAPPING,
+    AkShareEmSpotAdapter,
+)
 from pyqauto.adapters.base import BaseQuoteAdapter, code_for_symbol, source_id
-from pyqauto.adapters.easyquotation_sina_adapter import EasyQuotationSinaAdapter
+from pyqauto.adapters.easyquotation_sina_adapter import (
+    EASYQUOTATION_FIELD_MAPPING,
+    EasyQuotationSinaAdapter,
+)
 from pyqauto.adapters.easyquotation_tencent_adapter import EasyQuotationTencentAdapter
-from pyqauto.adapters.pytdx_adapter import PytdxAdapter
+from pyqauto.adapters.pytdx_adapter import (
+    PYTDX_KLINE_FIELD_MAPPING,
+    PYTDX_QUOTE_FIELD_MAPPING,
+    PytdxAdapter,
+)
 from pyqauto.audit import AuditLogger
 from pyqauto.exceptions import (
     ConfigurationError,
@@ -27,6 +38,7 @@ from pyqauto.policy import (
     load_pytdx_servers,
     load_source_policy,
 )
+from pyqauto.source_schema import source_schema_diagnostics
 
 DAILY_KLINE_ALIASES = {"1d", "daily", "day"}
 KLINE_APIS = {"minute_kline", "daily_kline", "kline"}
@@ -40,12 +52,14 @@ class QuoteRouter:
         *,
         policy: SourcePolicy,
         pytdx_adapters: list[BaseQuoteAdapter],
+        akshare_em_spot_adapter: BaseQuoteAdapter | None = None,
         easyquotation_sina_adapter: BaseQuoteAdapter | None = None,
         easyquotation_tencent_adapter: BaseQuoteAdapter | None = None,
         audit_logger: AuditLogger | None = None,
     ) -> None:
         self.policy = policy
         self.pytdx_adapters = pytdx_adapters
+        self.akshare_em_spot_adapter = akshare_em_spot_adapter
         self.easyquotation_sina_adapter = easyquotation_sina_adapter
         self.easyquotation_tencent_adapter = easyquotation_tencent_adapter
         self.audit_logger = audit_logger
@@ -67,6 +81,7 @@ class QuoteRouter:
         return cls(
             policy=policy,
             pytdx_adapters=pytdx_adapters,
+            akshare_em_spot_adapter=AkShareEmSpotAdapter(),
             easyquotation_sina_adapter=EasyQuotationSinaAdapter(),
             easyquotation_tencent_adapter=EasyQuotationTencentAdapter(),
             audit_logger=AuditLogger(
@@ -154,6 +169,7 @@ class QuoteRouter:
                 }
                 for adapter in self.pytdx_adapters
             ],
+            "akshare_em_spot_enabled": self.akshare_em_spot_adapter is not None,
             "easyquotation_sina_enabled": self.easyquotation_sina_adapter is not None,
             "easyquotation_tencent_enabled": self.easyquotation_tencent_adapter
             is not None,
@@ -163,7 +179,36 @@ class QuoteRouter:
             "sqlite_audit_enabled": bool(
                 self.audit_logger and self.audit_logger.sqlite_path
             ),
+            "source_schema_probe": self._source_schema_probe_diagnostics(),
         }
+
+    def _source_schema_probe_diagnostics(self) -> dict[str, Any]:
+        payload = source_schema_diagnostics()
+        payload["sources"] = {
+            "akshare_em_spot": {
+                "source_api": "akshare.stock_zh_a_spot_em",
+                "field_mapping": AKSHARE_EM_SPOT_FIELD_MAPPING,
+            },
+            "pytdx_quote": {
+                "source_name": "pytdx",
+                "source_api": "pytdx.get_security_quotes",
+                "field_mapping": PYTDX_QUOTE_FIELD_MAPPING,
+            },
+            "pytdx_kline": {
+                "source_name": "pytdx",
+                "source_api": "pytdx.get_security_bars",
+                "field_mapping": PYTDX_KLINE_FIELD_MAPPING,
+            },
+            "easyquotation_sina": {
+                "source_api": "easyquotation.sina.stocks",
+                "field_mapping": EASYQUOTATION_FIELD_MAPPING,
+            },
+            "easyquotation_tencent": {
+                "source_api": "easyquotation.tencent.stocks",
+                "field_mapping": EASYQUOTATION_FIELD_MAPPING,
+            },
+        }
+        return payload
 
     def _route_quotes(
         self,
@@ -281,6 +326,8 @@ class QuoteRouter:
         for source_name in api_policy.fallback_order:
             if source_name == "pytdx":
                 adapters.extend(self.pytdx_adapters)
+            elif source_name == "akshare_em_spot" and self.akshare_em_spot_adapter:
+                adapters.append(self.akshare_em_spot_adapter)
             elif source_name == "easyquotation_sina" and self.easyquotation_sina_adapter:
                 adapters.append(self.easyquotation_sina_adapter)
             elif (

@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.1 - 2026-06-21
+
+- Added the `pyqauto source-schema-probe-live` CLI.
+- Added live schema drift firewall reporting with source status, schema status,
+  missing fields, drift fields, rejection reasons, errors, and accepted/rejected
+  record counts.
+- Added `diagnose` support for reading the latest source schema live probe
+  summary.
+- Preserved AkShare unit rules: raw volume lots convert to shares, and raw
+  amount remains RMB yuan without division.
+- Fixed easyquotation Tencent composite volume/amount field parsing for current
+  real payload shape.
+- Kept the package read-only: no investment advice and no order execution.
+
 ## 0.3.0 - 2026-06-18
 
 - Renamed the PyPI package, Python import package, CLI command, and GitHub

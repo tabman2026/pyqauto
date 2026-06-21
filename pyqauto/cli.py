@@ -22,6 +22,11 @@ from pyqauto.pytdx_probe import (
     run_probe,
 )
 from pyqauto.router import QuoteRouter
+from pyqauto.source_schema_live import (
+    LIVE_PROBE_LOG_PATH,
+    LIVE_PROBE_REPORT_PATH,
+    run_source_schema_probe_live,
+)
 
 DEFAULT_PYTDX_SERVERS = DEFAULT_PYTDX_SERVERS_PATH
 DEFAULT_SOURCE_POLICY = DEFAULT_SOURCE_POLICY_PATH
@@ -129,6 +134,46 @@ def probe_pytdx(
         "servers connected. "
         f"Active config: {payload['active_config_path']}"
     )
+
+
+@main.command(
+    "source-schema-probe-live",
+    context_settings={"ignore_unknown_options": True, "allow_extra_args": True},
+)
+@click.option("--json", "probe_json_output", is_flag=True)
+@click.option("--output", "output_path", default=str(LIVE_PROBE_REPORT_PATH), show_default=True)
+@click.option("--jsonl", "jsonl_path", default=str(LIVE_PROBE_LOG_PATH), show_default=True)
+@click.option("--pytdx-servers", "command_pytdx_servers", default=None)
+@click.argument("extra_args", nargs=-1, type=click.UNPROCESSED)
+@click.pass_context
+def source_schema_probe_live(
+    ctx: click.Context,
+    probe_json_output: bool,
+    output_path: str,
+    jsonl_path: str,
+    command_pytdx_servers: str | None,
+    extra_args: tuple[str, ...],
+) -> None:
+    """Run live source schema drift checks; supports --symbols CODE CODE."""
+
+    options = ctx.obj or {}
+    symbols = _parse_live_probe_symbols(extra_args)
+    payload = run_source_schema_probe_live(
+        report_path=output_path,
+        log_path=jsonl_path,
+        pytdx_servers_path=command_pytdx_servers or options["pytdx_servers_path"],
+        symbols=symbols or None,
+    )
+    if probe_json_output:
+        click.echo(json.dumps(payload, ensure_ascii=False, indent=2))
+    else:
+        _print_live_probe_summary(
+            payload,
+            report_path=output_path,
+            log_path=jsonl_path,
+        )
+    if payload.get("overall_status") == "FAIL":
+        ctx.exit(1)
 
 
 @main.command()
@@ -273,6 +318,61 @@ def _router_from_options(options: dict[str, Any]) -> QuoteRouter:
 
 def _format_error(exc: QuoteRouterError) -> str:
     return f"[{exc.code}] {exc}"
+
+
+def _parse_live_probe_symbols(extra_args: tuple[str, ...]) -> list[str]:
+    symbols: list[str] = []
+    args = list(extra_args)
+    index = 0
+    while index < len(args):
+        item = args[index]
+        if item == "--symbols":
+            index += 1
+            start_count = len(symbols)
+            while index < len(args) and not args[index].startswith("-"):
+                symbols.extend(_split_symbol_values(args[index]))
+                index += 1
+            if len(symbols) == start_count:
+                raise click.ClickException("--symbols requires at least one symbol")
+            continue
+        if item.startswith("--symbols="):
+            symbols.extend(_split_symbol_values(item.partition("=")[2]))
+            index += 1
+            continue
+        raise click.ClickException(f"unsupported argument for source-schema-probe-live: {item}")
+    return symbols
+
+
+def _split_symbol_values(value: str) -> list[str]:
+    return [part for part in value.replace(",", " ").split() if part]
+
+
+def _print_live_probe_summary(
+    payload: dict[str, Any],
+    *,
+    report_path: str,
+    log_path: str,
+) -> None:
+    click.echo(f"overall_status: {payload.get('overall_status')}")
+    click.echo(f"checked_at: {payload.get('checked_at')}")
+    click.echo(f"report_path: {_safe_cli_path(report_path)}")
+    click.echo(f"log_path: {_safe_cli_path(log_path)}")
+    source_status = payload.get("source_status") or {}
+    if isinstance(source_status, dict):
+        for key, status in source_status.items():
+            click.echo(f"{key}: {status}")
+    click.echo(f"accepted_record_count: {payload.get('accepted_record_count')}")
+    click.echo(f"rejected_record_count: {payload.get('rejected_record_count')}")
+
+
+def _safe_cli_path(path_value: str) -> str:
+    path = Path(path_value)
+    if not path.is_absolute():
+        return path.as_posix()
+    try:
+        return path.resolve().relative_to(Path.cwd().resolve()).as_posix()
+    except (OSError, ValueError):
+        return f"<absolute-path-redacted>/{path.name}"
 
 
 def _print_payload(payload: Any, *, json_output: bool) -> None:

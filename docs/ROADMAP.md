@@ -15,7 +15,7 @@
 
 ## v0.4.x
 
-- Review optional adapter candidates only when field normalization tests exist.
+- Review optional adapters only when field normalization tests exist.
 - Improve packaging and release verification.
 
 ## v1.0.0

@@ -10,6 +10,9 @@ from pathlib import Path
 from typing import Any
 
 from pyqauto import __version__
+from pyqauto.adapters.akshare_em_spot_adapter import AKSHARE_EM_SPOT_FIELD_MAPPING
+from pyqauto.adapters.easyquotation_sina_adapter import EASYQUOTATION_FIELD_MAPPING
+from pyqauto.adapters.pytdx_adapter import PYTDX_KLINE_FIELD_MAPPING, PYTDX_QUOTE_FIELD_MAPPING
 from pyqauto.exceptions import QuoteRouterError
 from pyqauto.policy import (
     DEFAULT_PYTDX_SERVERS_PATH,
@@ -19,6 +22,7 @@ from pyqauto.policy import (
     load_pytdx_servers,
     load_source_policy,
 )
+from pyqauto.source_schema import source_schema_diagnostics
 
 
 def build_diagnostics(
@@ -73,8 +77,38 @@ def build_diagnostics(
             "jsonl": _safe_optional_path(audit_jsonl_path),
             "sqlite": _safe_optional_path(audit_sqlite_path),
         },
+        "source_schema_probe": _source_schema_probe_diagnostics(),
         "recent_trace_id": recent_trace_id,
     }
+
+
+def _source_schema_probe_diagnostics() -> dict[str, Any]:
+    payload = source_schema_diagnostics()
+    payload["sources"] = {
+        "akshare_em_spot": {
+            "source_api": "akshare.stock_zh_a_spot_em",
+            "field_mapping": AKSHARE_EM_SPOT_FIELD_MAPPING,
+        },
+        "pytdx_quote": {
+            "source_name": "pytdx",
+            "source_api": "pytdx.get_security_quotes",
+            "field_mapping": PYTDX_QUOTE_FIELD_MAPPING,
+        },
+        "pytdx_kline": {
+            "source_name": "pytdx",
+            "source_api": "pytdx.get_security_bars",
+            "field_mapping": PYTDX_KLINE_FIELD_MAPPING,
+        },
+        "easyquotation_sina": {
+            "source_api": "easyquotation.sina.stocks",
+            "field_mapping": EASYQUOTATION_FIELD_MAPPING,
+        },
+        "easyquotation_tencent": {
+            "source_api": "easyquotation.tencent.stocks",
+            "field_mapping": EASYQUOTATION_FIELD_MAPPING,
+        },
+    }
+    return payload
 
 
 def _source_policy_status(path: Path) -> dict[str, Any]:

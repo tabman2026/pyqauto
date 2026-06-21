@@ -53,25 +53,18 @@ def test_chinese_docs_do_not_introduce_forbidden_trading_features() -> None:
             read_doc("docs/GITHUB_ABOUT_SETUP.md"),
         ]
     )
-    always_forbidden_terms = [
+    forbidden_terms = [
         "Q" + "MT",
         "券" + "商",
-        "收益" + "率",
-        "胜" + "率",
-    ]
-    negative_only_terms = [
         "真实" + "交易",
         "候选" + "股池",
         "买卖" + "点",
+        "收益" + "率",
+        "胜" + "率",
     ]
-    negative_markers = ["不提供", "不生成", "不接入", "不保证", "不对外", "不会"]
 
-    for term in always_forbidden_terms:
+    for term in forbidden_terms:
         assert term not in texts
-    for term in negative_only_terms:
-        matching_lines = [line for line in texts.splitlines() if term in line]
-        assert matching_lines
-        assert all(any(marker in line for marker in negative_markers) for line in matching_lines)
 
 
 def test_chinese_docs_do_not_leak_local_paths() -> None:

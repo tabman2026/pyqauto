@@ -34,6 +34,8 @@ pyqauto daily 000001 --count 120
 pyqauto kline 000001 --period 15m --count 120
 pyqauto kline 000001 --period 1d --count 120
 pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto source-schema-probe-live --json
+pyqauto source-schema-probe-live --symbols 000001 600000 --json
 pyqauto diagnose --json
 ```
 
@@ -43,6 +45,26 @@ quote and K-line rows.
 
 Failures return a non-zero exit code and include the project error code, for
 example `[UNSUPPORTED_PERIOD]`.
+
+## Source Schema Live Probe
+
+```bash
+pyqauto source-schema-probe-live --json
+pyqauto source-schema-probe-live --symbols 000001 600000 --json
+pyqauto source-schema-probe-live --output reports/latest/source_schema_probe_live.json
+pyqauto source-schema-probe-live --jsonl logs/source_schema_probe_live.jsonl
+```
+
+The live probe connects to upstream providers and verifies that raw payloads can
+still be normalized into the standard public quote schema. `--json` prints the
+full report contract. Without `--json`, the CLI prints a short summary.
+
+`WARN` means at least one source passed while another source failed or was
+rejected by schema validation; the command exits successfully. `FAIL` means no
+source passed and the command exits with a non-zero status.
+
+Invalid rows are not exposed as public records. Rejection reasons are recorded
+in `rejected_reason` and provider exceptions in `error_message`.
 
 ## pytdx Probe
 
@@ -56,7 +78,7 @@ pyqauto probe-pytdx \
 
 The probe checks connect, realtime, minute K-line, and daily K-line availability
 for pytdx servers and writes an active local pool sorted by K-line availability,
-connect success, and latency. `--limit 0` means no candidate limit.
+connect success, and latency. `--limit 0` means no server-count limit.
 
 The output file defaults to `config/pytdx_servers.active.local.json`. It is a
 local diagnostic result and should not be committed.
