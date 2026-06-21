@@ -87,5 +87,6 @@ Validation status:
 - GitHub repository rename to `tabman2026/pyqauto`: completed.
 - GitHub Release v0.3.0: completed.
 - PyPI pyqauto 0.3.0: completed.
-- GitHub Release v0.3.1: pending.
-- PyPI pyqauto 0.3.1: pending GitHub Actions Trusted Publishing.
+- GitHub Release v0.3.1: completed.
+- PyPI pyqauto 0.3.1: completed through GitHub Actions Trusted Publishing.
+- Post-release cold-start smoke test for pyqauto 0.3.1: completed.

@@ -1,0 +1,20 @@
+2026-06-21 post-release cold-start smoke test
+
+Commands:
+1. python -X utf8 -m venv .venv_pyqauto_031_check
+2. .venv_pyqauto_031_check\Scripts\python.exe -X utf8 -m pip install --upgrade pip
+3. .venv_pyqauto_031_check\Scripts\python.exe -X utf8 -m pip install pyqauto -i https://pypi.org/simple
+4. .venv_pyqauto_031_check\Scripts\python.exe -X utf8 -c "import pyqauto; print(pyqauto.__version__)"
+   Output: 0.3.1
+5. .venv_pyqauto_031_check\Scripts\python.exe -X utf8 -c "from pyqauto import QuoteRouter; print(QuoteRouter)"
+   Output: <class 'pyqauto.router.QuoteRouter'>
+6. pyqauto --help
+   Result: passed; command list includes source-schema-probe-live.
+7. pyqauto diagnose --json
+   Result: passed; pyqauto_version is 0.3.1.
+8. pyqauto source-schema-probe-live --help
+   Result: passed.
+
+PyPI package downloaded: pyqauto-0.3.1-py3-none-any.whl
+No local twine upload was used.
+No PyPI credential was requested.

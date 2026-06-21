@@ -1,0 +1,14 @@
+{
+  "package": "pyqauto",
+  "version": "0.3.1",
+  "pypi_install": "passed",
+  "quote_router_import": "passed",
+  "cli_help": "passed",
+  "diagnose_json": "passed",
+  "source_schema_probe_live_help": "passed",
+  "latest_live_probe_overall_status": "WARN",
+  "latest_live_probe_accepted_record_count": 10,
+  "latest_live_probe_rejected_record_count": 0,
+  "twine_upload_used": false,
+  "pypi_credential_requested": false
+}

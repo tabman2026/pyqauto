@@ -43,6 +43,7 @@ SKIP_DIRS = {
     ".venv",
     ".venv_pyqauto_check",
     ".venv_pyqauto_v030_check",
+    ".venv_pyqauto_031_check",
     "__pycache__",
     "build",
     "dist",

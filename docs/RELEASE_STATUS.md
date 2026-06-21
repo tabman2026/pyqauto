@@ -21,8 +21,8 @@
 - GitHub repository rename to `tabman2026/pyqauto`: completed.
 - GitHub Release `v0.3.0`: completed.
 - PyPI publication for `pyqauto 0.3.0`: completed.
-- GitHub Release `v0.3.1`: pending.
-- PyPI publication for `pyqauto 0.3.1`: pending GitHub Actions Trusted Publishing.
+- GitHub Release `v0.3.1`: completed.
+- PyPI publication for `pyqauto 0.3.1`: completed through GitHub Actions Trusted Publishing.
 - Local `twine upload`: not used.
 - Password-based PyPI publishing: not required.
 
