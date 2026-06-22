@@ -5,12 +5,20 @@ not change `config/source_policy.example.yaml`. Candidate adapters are not
 directly enabled.
 
 Candidate adapters are not directly enabled.
+Candidate adapters do not enter the default fallback chain.
+
+Related v0.4.0 gates:
+
+- [CANDIDATE_NORMALIZE_CONTRACT_V040.md](CANDIDATE_NORMALIZE_CONTRACT_V040.md)
+- [V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md](V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md)
 
 ## Shared Rules
 
 - Do not directly enable candidate adapter entries from this draft.
 - Keep candidate rows behind mock tests, live probe, `unit_rules`, schema guard,
   and audit acceptance.
+- Keep candidate source names suffixed with `_candidate` in mock reports.
+- Treat candidate normalizers as test-only contracts, not public adapter APIs.
 - Do not let rows with `unknown` units enter public records.
 - Do not use easyquotation as a K-line fallback.
 

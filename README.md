@@ -55,9 +55,14 @@ account login, order execution, screening, timing signals, or performance claims
   [review](docs/ADAPTER_CANDIDATE_REVIEW_V040.md),
   [field mapping draft](docs/ADAPTER_FIELD_MAPPING_DRAFT_V040.md),
   [unit rules draft](docs/ADAPTER_UNIT_RULES_DRAFT_V040.md), and
-  [source policy draft](docs/SOURCE_POLICY_DRAFT_V040.md). These are candidate
-  adapter review documents and do not mean the current version supports these
-  data sources.
+  [source policy draft](docs/SOURCE_POLICY_DRAFT_V040.md).
+- v0.4.0 candidate normalize contract:
+  [CANDIDATE_NORMALIZE_CONTRACT_V040.md](docs/CANDIDATE_NORMALIZE_CONTRACT_V040.md)
+  and
+  [V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md](docs/V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md).
+  These are candidate adapter review documents. Candidate normalizers are
+  test-only contracts, not public adapter APIs. These drafts do not mean the current version supports these data sources.
+  Candidate sources do not enter the default fallback chain.
 
 English start here: [docs/NEW_USER_START_HERE.md](docs/NEW_USER_START_HERE.md)
 

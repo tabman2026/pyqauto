@@ -3,6 +3,11 @@
 These rules are candidate-only. They are not current runtime behavior and do
 not make efinance, baostock, or mootdx officially supported sources.
 
+Related v0.4.0 gates:
+
+- [CANDIDATE_NORMALIZE_CONTRACT_V040.md](CANDIDATE_NORMALIZE_CONTRACT_V040.md)
+- [V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md](V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md)
+
 pyqauto standard semantics:
 
 - `volume_shares`: traded volume in shares.
@@ -48,3 +53,7 @@ pyqauto standard semantics:
 If an adapter cannot prove conversion to `volume_shares` and `amount_yuan`, the
 normalized row must be rejected before public output. `unknown` is an explicit
 unit value, not a placeholder for guessing.
+
+Candidate normalize reports must expose `unit_status` as `known`, `unknown`,
+`converted`, or `rejected`. Candidate normalizers are test-only contracts, not
+public adapter APIs.

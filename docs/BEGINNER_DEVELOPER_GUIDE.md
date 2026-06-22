@@ -52,10 +52,13 @@ support statements:
 - [ADAPTER_FIELD_MAPPING_DRAFT_V040.md](ADAPTER_FIELD_MAPPING_DRAFT_V040.md)
 - [ADAPTER_UNIT_RULES_DRAFT_V040.md](ADAPTER_UNIT_RULES_DRAFT_V040.md)
 - [SOURCE_POLICY_DRAFT_V040.md](SOURCE_POLICY_DRAFT_V040.md)
+- [CANDIDATE_NORMALIZE_CONTRACT_V040.md](CANDIDATE_NORMALIZE_CONTRACT_V040.md)
+- [V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md](V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md)
 
 They describe candidate adapter admission work for efinance, baostock, and
 mootdx. They do not mean the current version supports these data sources, and
 they do not add candidates to the default fallback chain.
+Candidate normalizers are test-only contracts, not public adapter APIs.
 
 ## Why Raw Output Is Not Public Output
 

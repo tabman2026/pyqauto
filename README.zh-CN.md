@@ -222,8 +222,14 @@ pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
   [评审](docs/ADAPTER_CANDIDATE_REVIEW_V040.md)、
   [字段映射草案](docs/ADAPTER_FIELD_MAPPING_DRAFT_V040.md)、
   [单位规则草案](docs/ADAPTER_UNIT_RULES_DRAFT_V040.md)、
-  [source policy 草案](docs/SOURCE_POLICY_DRAFT_V040.md)。这些只是候选
-  adapter 评审文档，不代表当前版本已经支持这些数据源。
+  [source policy 草案](docs/SOURCE_POLICY_DRAFT_V040.md)。
+- v0.4.0 candidate normalize 合同：
+  [CANDIDATE_NORMALIZE_CONTRACT_V040.md](docs/CANDIDATE_NORMALIZE_CONTRACT_V040.md)
+  和
+  [V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md](docs/V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md)。
+  这些只是候选 adapter 评审文档，candidate normalizers are test-only
+  contracts, not public adapter APIs。These drafts do not mean the current version supports these data sources。
+  候选源 do not enter the default fallback chain。
 
 ## Issue 反馈方式
 

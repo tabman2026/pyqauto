@@ -7,6 +7,13 @@ fallback chain.
 
 Candidate adapters are not part of the default fallback chain.
 
+Candidate normalizers are test-only contracts, not public adapter APIs.
+
+Related v0.4.0 gates:
+
+- [CANDIDATE_NORMALIZE_CONTRACT_V040.md](CANDIDATE_NORMALIZE_CONTRACT_V040.md)
+- [V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md](V040_ADAPTER_IMPLEMENTATION_CHECKLIST.md)
+
 ## Scope And Sources Read
 
 Reviewed candidates:
@@ -39,7 +46,8 @@ live probe, unit rules, schema guard, and audit acceptance pass.
 - `baostock`: `ready_for_mock` for historical K-line only. The login/session and
   `ResultData` cursor should be modeled before considering live probe.
 - `mootdx`: `needs_more_research` as an independent adapter. It may be more
-  useful as a pytdx server probe reference than as a separate fallback.
+  useful as a pytdx server / API wrapper reference than as a separate fallback.
+  It must not replace pytdx in the default policy.
 
 ## Admission Gates Before Any Runtime Wiring
 
