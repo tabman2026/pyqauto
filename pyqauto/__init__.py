@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from .governance import SystemState
 from .models import KlineBar, QuoteRecord
 from .router import QuoteRouter
 
@@ -119,6 +120,7 @@ __all__ = [
     "KlineBar",
     "QuoteRecord",
     "QuoteRouter",
+    "SystemState",
     "__version__",
     "configure",
     "daily",

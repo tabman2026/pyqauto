@@ -20,6 +20,10 @@ def test_api_reference_lists_public_router_methods() -> None:
         "daily_kline",
         "kline",
         "diagnose",
+        "status",
+        "health",
+        "decision_trace",
+        "get_system_state",
     ]:
         assert hasattr(QuoteRouter, api_name)
         assert api_name in text

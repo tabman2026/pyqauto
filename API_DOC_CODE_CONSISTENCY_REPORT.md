@@ -29,6 +29,10 @@ Scope:
 | `daily_kline` | yes | yes | `daily` | `daily_kline_demo.py` | yes | `pytdx` | pytdx server roles only | PASS |
 | `kline` | yes | yes | `kline` | `kline_unified_demo.py` | yes | `pytdx` | pytdx server roles only | PASS |
 | `diagnose` | yes | yes | `diagnose` | `diagnose_demo.py` | yes | local configuration only | not applicable | PASS |
+| `status` | yes | yes | not applicable | not applicable | yes | runtime governance snapshot | not applicable | PASS |
+| `health` | yes | yes | not applicable | not applicable | yes | runtime health scores | not applicable | PASS |
+| `decision_trace` | yes | yes | not applicable | not applicable | yes | decision explanation | not applicable | PASS |
+| `get_system_state` | yes | yes | not applicable | not applicable | yes | runtime state enum | not applicable | PASS |
 
 ## K-line Verification
 

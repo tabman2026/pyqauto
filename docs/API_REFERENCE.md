@@ -103,6 +103,26 @@ CLI equivalent:
 pyqauto diagnose --json
 ```
 
+## Runtime Governance
+
+```python
+router.status() -> dict
+router.health() -> dict
+router.decision_trace() -> dict
+router.get_system_state() -> SystemState
+```
+
+These read-only inspection APIs expose the L5 runtime governance layer:
+
+- `status()` returns the current system state, health scores, latest decision
+  trace, and state history.
+- `health()` returns `pytdx_health_score`, `akshare_health_score`,
+  `efinance_health_score`, and `overall_data_health_score`.
+- `decision_trace()` explains the latest decision with failed sources, fallback
+  chain, and schema validation status.
+- `get_system_state()` returns one of `NORMAL`, `DEGRADED`, `READONLY`,
+  `BLOCKED`, or `RECOVERY`.
+
 ## Return Values
 
 Realtime APIs return `QuoteRecord`. K-line APIs return `KlineBar`. Both models

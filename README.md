@@ -144,6 +144,9 @@ not be committed.
   `fallback_from`, and `trace_id`.
 - JSONL and SQLite audit logs record attempts, `fallback_chain`,
   `selected_source`, duration, record count, and final error details.
+- Runtime governance APIs expose `status()`, `health()`, `decision_trace()`,
+  and `get_system_state()` for system state, health scores, fallback
+  explanations, and schema validation status.
 - The default test suite is offline. Live smoke checks require explicit opt-in.
 
 See [docs/SOURCE_SCHEMA_LIVE_PROBE.md](docs/SOURCE_SCHEMA_LIVE_PROBE.md) for
@@ -192,6 +195,9 @@ aq.diagnose()
 ```
 
 For advanced use, `from pyqauto import QuoteRouter` remains available.
+Advanced router instances also expose read-only runtime governance methods:
+`router.status()`, `router.health()`, `router.decision_trace()`, and
+`router.get_system_state()`.
 
 ## CLI
 

@@ -1,10 +1,25 @@
 # Project State
 
-Date: 2026-06-21
+Date: 2026-06-22
 
 Version target: `0.3.1`
 
 Current release task status:
+
+- 2026-06-22 runtime governance task: added `pyqauto.governance` with
+  `RuntimeGovernanceEngine`, `HealthMonitor`, `DecisionEngine`, and
+  `RuntimeStateMachine`.
+- `QuoteRouter` now records read-only runtime governance state from existing
+  audit records and latest live probe reports without changing quote or K-line
+  return values.
+- New governance APIs: `status()`, `health()`, `decision_trace()`, and
+  `get_system_state()`.
+- Governance states are `NORMAL`, `DEGRADED`, `READONLY`, `BLOCKED`, and
+  `RECOVERY`.
+- Health scores now cover `pytdx_health_score`, `akshare_health_score`,
+  `efinance_health_score`, and `overall_data_health_score` from timeout,
+  schema drift, fallback rate, and success rate signals.
+- Validation for this task is tracked in `TASK026_GOVERNANCE_REPORT.md`.
 
 - 2026-06-21 live source schema probe task: added the formal package CLI
   `pyqauto source-schema-probe-live`.

@@ -29,6 +29,8 @@ from pyqauto.exceptions import (
     NoAvailableSourceError,
     UnsupportedPeriodError,
 )
+from pyqauto.governance.runtime_engine import RuntimeGovernanceEngine
+from pyqauto.governance.state_machine import SystemState
 from pyqauto.models import AuditAttempt, AuditRecord, KlineBar, QuoteRecord, utc_now_iso
 from pyqauto.policy import (
     SUPPORTED_DAILY_KLINE_PERIODS,
@@ -39,6 +41,7 @@ from pyqauto.policy import (
     load_source_policy,
 )
 from pyqauto.source_schema import source_schema_diagnostics
+from pyqauto.source_schema_live import load_latest_live_probe_report
 
 DAILY_KLINE_ALIASES = {"1d", "daily", "day"}
 KLINE_APIS = {"minute_kline", "daily_kline", "kline"}
@@ -56,6 +59,7 @@ class QuoteRouter:
         easyquotation_sina_adapter: BaseQuoteAdapter | None = None,
         easyquotation_tencent_adapter: BaseQuoteAdapter | None = None,
         audit_logger: AuditLogger | None = None,
+        runtime_engine: RuntimeGovernanceEngine | None = None,
     ) -> None:
         self.policy = policy
         self.pytdx_adapters = pytdx_adapters
@@ -63,6 +67,7 @@ class QuoteRouter:
         self.easyquotation_sina_adapter = easyquotation_sina_adapter
         self.easyquotation_tencent_adapter = easyquotation_tencent_adapter
         self.audit_logger = audit_logger
+        self.runtime_engine = runtime_engine or RuntimeGovernanceEngine()
 
     @classmethod
     def from_config(
@@ -182,6 +187,30 @@ class QuoteRouter:
             "source_schema_probe": self._source_schema_probe_diagnostics(),
         }
 
+    def status(self) -> dict[str, Any]:
+        """Return runtime governance status without connecting to providers."""
+
+        self._sync_latest_live_probe()
+        return self.runtime_engine.status()
+
+    def health(self) -> dict[str, Any]:
+        """Return runtime governance health scores."""
+
+        self._sync_latest_live_probe()
+        return self.runtime_engine.health()
+
+    def decision_trace(self) -> dict[str, Any]:
+        """Return the latest explainable runtime decision trace."""
+
+        self._sync_latest_live_probe()
+        return self.runtime_engine.decision_trace()
+
+    def get_system_state(self) -> SystemState:
+        """Return the current runtime governance system state."""
+
+        self._sync_latest_live_probe()
+        return self.runtime_engine.get_system_state()
+
     def _source_schema_probe_diagnostics(self) -> dict[str, Any]:
         payload = source_schema_diagnostics()
         payload["sources"] = {
@@ -209,6 +238,9 @@ class QuoteRouter:
             },
         }
         return payload
+
+    def _sync_latest_live_probe(self) -> None:
+        self.runtime_engine.observe_live_probe(load_latest_live_probe_report())
 
     def _route_quotes(
         self,
@@ -428,26 +460,25 @@ class QuoteRouter:
         error: BaseException | None,
         record_count: int,
     ) -> None:
-        if not self.audit_logger:
-            return
-        self.audit_logger.log(
-            AuditRecord(
-                trace_id=trace_id,
-                api_name=api_name,
-                symbols=symbols,
-                started_at=started_at,
-                finished_at=utc_now_iso(),
-                duration_ms=duration_ms,
-                selected_source=selected_source,
-                selected_source_level=selected_source_level,
-                attempts=attempts,
-                fallback_chain=fallback_chain,
-                success=success,
-                error_type=error.__class__.__name__ if error else None,
-                error_message=str(error) if error else None,
-                record_count=record_count,
-            )
+        record = AuditRecord(
+            trace_id=trace_id,
+            api_name=api_name,
+            symbols=symbols,
+            started_at=started_at,
+            finished_at=utc_now_iso(),
+            duration_ms=duration_ms,
+            selected_source=selected_source,
+            selected_source_level=selected_source_level,
+            attempts=attempts,
+            fallback_chain=fallback_chain,
+            success=success,
+            error_type=error.__class__.__name__ if error else None,
+            error_message=str(error) if error else None,
+            record_count=record_count,
         )
+        if self.audit_logger:
+            self.audit_logger.log(record)
+        self.runtime_engine.observe_audit_record(record)
 
 
 def _elapsed_ms(started: float) -> float:
