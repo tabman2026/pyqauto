@@ -1,33 +1,24 @@
 # Release Status
 
-## Current Release
+Current stable recommendation: `pyqauto==0.3.1`.
 
-- Recommended package name: `pyqauto`
-- Current version: `0.3.1`
-- GitHub: https://github.com/tabman2026/pyqauto
-- PyPI: https://pypi.org/project/pyqauto/
-- Install command: `python -X utf8 -m pip install pyqauto -i https://pypi.org/simple`
+Current release candidate: `pyqauto==1.0.0rc1`.
 
-## User Guidance
+`1.0.0rc1` is a prerelease candidate for V1 API freeze validation. It is not the
+final `1.0.0` release and is not the default recommendation for all users.
 
-- New users should install and import `pyqauto`.
-- The CLI command is `pyqauto`.
-- The Python import package is `pyqauto`.
-- The old `aquote-router` package name is retained only as migration history.
-- Existing users of the old name should follow `docs/MIGRATION_FROM_AQUOTE_ROUTER.md`.
+Release gates for any later final `1.0.0` task:
 
-## Publishing Status
+- `1.0.0rc1` cold-start installation passes.
+- `0.3.1` to `1.0.0rc1` upgrade passes.
+- `1.0.0rc1` to `0.3.1` rollback passes.
+- Offline cross-layer scenarios pass.
+- Multiple stability or soak validations complete.
+- No blocking RC issue remains.
+- Public API snapshot has no unexpected change.
+- The user explicitly approves final `1.0.0`.
 
-- GitHub repository rename to `tabman2026/pyqauto`: completed.
-- GitHub Release `v0.3.0`: completed.
-- PyPI publication for `pyqauto 0.3.0`: completed.
-- GitHub Release `v0.3.1`: completed.
-- PyPI publication for `pyqauto 0.3.1`: completed through GitHub Actions Trusted Publishing.
-- Local `twine upload`: not used.
-- Password-based PyPI publishing: not required.
-
-## Audit Conclusion
-
-This public status document contains only release state and migration guidance.
-It does not include local filesystem paths, credential material, investment
-advice, order execution, or data redistribution claims.
+Audit conclusion: this project provides local market-data infrastructure only.
+It does not provide investment advice, trading execution, strategy signals,
+stock picking, broker integration, QMT integration, account access, return
+promises, or automated trading logic.

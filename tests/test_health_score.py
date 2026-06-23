@@ -1,55 +1,21 @@
 from __future__ import annotations
 
-from pyqauto.governance.health_monitor import HealthMonitor
+from astock_source_router.adapters.fake_adapter import FakeAdapter
+from astock_source_router.core.policy import SourcePolicy
+from astock_source_router.core.router import MarketRouter
 
 
-def test_health_scores_start_neutral() -> None:
-    monitor = HealthMonitor()
+def test_health_score_is_source_feature_scoped(test_config):
+    policy = SourcePolicy({"realtime_quotes": ["fake"], "daily_kline": ["fake"]})
+    router = MarketRouter(config=test_config, source_policy=policy, adapters=[FakeAdapter()], auto_register=False)
 
-    scores = monitor.scores()
+    router.get_realtime_quotes(["000001"])
+    router.get_daily_kline("000001", "20260611", "20260611")
+    report = router.health_report()
 
-    assert scores["pytdx_health_score"] == 100.0
-    assert scores["akshare_health_score"] == 100.0
-    assert scores["efinance_health_score"] == 100.0
-    assert scores["overall_data_health_score"] == 100.0
-
-
-def test_health_score_declines_on_timeout_and_fallback() -> None:
-    monitor = HealthMonitor()
-
-    monitor.observe_attempts(
-        [
-            {
-                "source": "pytdx",
-                "source_level": "primary",
-                "success": False,
-                "duration_ms": 8000,
-                "error_type": "TimeoutError",
-                "error_message": "request timeout",
-            }
-        ],
-        fallback_chain=["pytdx:primary"],
-        route_success=True,
+    keys = {(row["source"], row["feature"]) for row in report.to_dict("records")}
+    assert ("fake", "realtime_quotes") in keys
+    assert ("fake", "daily_kline") in keys
+    assert {"avg_latency_ms", "p95_latency_ms", "empty_rate", "field_complete_rate"}.issubset(
+        set(report.columns)
     )
-
-    health = monitor.snapshot()
-
-    assert health["pytdx_health_score"] < 100.0
-    assert health["overall_data_health_score"] < 100.0
-    assert health["sources"]["pytdx"]["timeout_rate"] == 1.0
-    assert health["sources"]["pytdx"]["fallback_rate"] == 1.0
-
-
-def test_health_score_declines_on_schema_drift() -> None:
-    monitor = HealthMonitor()
-
-    monitor.observe_schema_validation(
-        source_name="akshare_em_spot",
-        adapter_status="schema_drift",
-        schema_drift_fields=["last_price"],
-    )
-
-    health = monitor.snapshot()
-
-    assert health["akshare_health_score"] < 100.0
-    assert health["sources"]["akshare"]["schema_drift_rate"] == 1.0

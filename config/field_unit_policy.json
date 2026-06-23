@@ -1,0 +1,88 @@
+{
+  "version": "task016_field_unit_freeze_v1",
+  "created_for_task": "TASK016",
+  "standard_units": {
+    "price_fields": {
+      "fields": ["open", "high", "low", "close", "pre_close", "last_price"],
+      "standard_unit": "yuan",
+      "rule": "prices are stored in RMB yuan; preserve raw_* and *_normalized values"
+    },
+    "volume": {
+      "standard_unit": "share",
+      "required_fields": [
+        "raw_volume",
+        "raw_volume_unit",
+        "volume",
+        "volume_unit",
+        "volume_normalized",
+        "volume_normalized_unit",
+        "volume_unit_source",
+        "volume_unit_confidence"
+      ],
+      "conversion": {
+        "share": 1,
+        "lot": 100
+      }
+    },
+    "amount": {
+      "standard_unit": "yuan",
+      "required_fields": [
+        "raw_amount",
+        "raw_amount_unit",
+        "amount",
+        "amount_unit",
+        "amount_normalized",
+        "amount_normalized_unit",
+        "amount_unit_source",
+        "amount_unit_confidence"
+      ],
+      "conversion": {
+        "yuan": 1,
+        "wan_yuan": 10000,
+        "yi_yuan": 100000000
+      }
+    },
+    "pct_chg": {
+      "standard_unit": "percent",
+      "required_fields": [
+        "pct_chg",
+        "pct_chg_unit",
+        "pct_chg_source",
+        "pct_chg_derived",
+        "pct_chg_formula",
+        "pct_chg_warning"
+      ],
+      "formula": "(close - pre_close) / pre_close * 100",
+      "ratio_to_percent_factor": 100
+    },
+    "adjust_type": {
+      "allowed_values": ["none", "qfq", "hfq", "unknown"],
+      "rule": "daily_kline must carry adjust_type; different adjust_type values cannot be compared directly"
+    },
+    "time_fields": {
+      "date": "YYYY-MM-DD",
+      "time": "HH:MM:SS",
+      "data_timestamp": "ISO-8601",
+      "request_time": "ISO-8601"
+    },
+    "source_fields": ["source", "source_latency_ms", "source_status", "field_warnings"]
+  },
+  "block_rules": [
+    "OHLC missing",
+    "last_price missing",
+    "code missing",
+    "date missing",
+    "source missing",
+    "daily_kline adjust_type conflict without warning or block marker",
+    "volume unit unknown when downstream requires strong consistency",
+    "amount unit unknown when downstream requires strong consistency",
+    "lite_realtime_quotes used as full_realtime_quotes"
+  ],
+  "warn_rules": [
+    "known 100x volume unit difference is marked and not used for strong consistency",
+    "index volume unit difference is marked",
+    "pct_chg exceeds tolerance slightly while price fields remain aligned",
+    "source timestamp lag is near the accepted boundary",
+    "source unit confidence is medium or low"
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "version": "task016_source_unit_policy_v1",
+  "created_for_task": "TASK016",
+  "pytdx": {
+    "realtime_quotes": {
+      "price_unit": "yuan",
+      "volume_unit": "lot",
+      "amount_unit": "yuan_or_unknown",
+      "pct_chg_unit": "percent_derived",
+      "confidence": "medium",
+      "notes": "pct_chg is derived by this project from price and last_close; quote volume has task013 cross-source unit WARN history."
+    },
+    "full_realtime_quotes": {
+      "price_unit": "yuan",
+      "volume_unit": "lot",
+      "amount_unit": "yuan_or_unknown",
+      "pct_chg_unit": "percent_derived",
+      "confidence": "medium",
+      "notes": "Same adapter path as realtime_quotes."
+    },
+    "index_realtime": {
+      "price_unit": "yuan",
+      "volume_unit": "lot",
+      "amount_unit": "yuan_or_unknown",
+      "pct_chg_unit": "percent_derived",
+      "confidence": "medium",
+      "notes": "Index realtime volume has task013 unit ratio WARN history."
+    }
+  },
+  "easyquotation_sina": {
+    "realtime_quotes": {
+      "price_unit": "yuan",
+      "volume_unit": "share_or_lot_to_confirm",
+      "amount_unit": "yuan",
+      "pct_chg_unit": "percent_or_derived",
+      "confidence": "low",
+      "notes": "Volume unit remains explicitly low confidence after task013 WARN."
+    },
+    "full_realtime_quotes": {
+      "price_unit": "yuan",
+      "volume_unit": "share_or_lot_to_confirm",
+      "amount_unit": "yuan",
+      "pct_chg_unit": "percent_or_derived",
+      "confidence": "low",
+      "notes": "Same adapter path as realtime_quotes."
+    },
+    "index_realtime": {
+      "price_unit": "yuan",
+      "volume_unit": "share_or_lot_to_confirm",
+      "amount_unit": "yuan",
+      "pct_chg_unit": "percent_or_derived",
+      "confidence": "low",
+      "notes": "Index volume remains WARN-only unless downstream requires strong unit consistency."
+    }
+  },
+  "easyquotation_tencent": {
+    "realtime_quotes": {
+      "price_unit": "yuan",
+      "volume_unit": "lot_or_share_to_confirm",
+      "amount_unit": "wan_yuan",
+      "pct_chg_unit": "percent_or_derived",
+      "confidence": "low",
+      "notes": "Tencent amount is treated as wan_yuan with low confidence; volume remains to-confirm."
+    },
+    "full_realtime_quotes": {
+      "price_unit": "yuan",
+      "volume_unit": "lot_or_share_to_confirm",
+      "amount_unit": "wan_yuan",
+      "pct_chg_unit": "percent_or_derived",
+      "confidence": "low",
+      "notes": "Same adapter path as realtime_quotes."
+    },
+    "index_realtime": {
+      "price_unit": "yuan",
+      "volume_unit": "lot_or_share_to_confirm",
+      "amount_unit": "wan_yuan",
+      "pct_chg_unit": "percent_or_derived",
+      "confidence": "low",
+      "notes": "Index realtime volume remains WARN-only unless strong consistency is requested."
+    }
+  },
+  "akshare": {
+    "daily_kline": {
+      "price_unit": "yuan",
+      "volume_unit": "lot",
+      "amount_unit": "yuan",
+      "pct_chg_unit": "percent",
+      "confidence": "medium",
+      "notes": "stock_zh_a_hist daily volume is normalized as lot->share because task013 found a 100x daily volume unit WARN."
+    },
+    "trade_calendar": {
+      "date_unit": "YYYY-MM-DD",
+      "confidence": "medium"
+    },
+    "index_realtime": {
+      "price_unit": "yuan",
+      "volume_unit": "share_or_lot_to_confirm",
+      "amount_unit": "yuan_or_unknown",
+      "pct_chg_unit": "percent",
+      "confidence": "low",
+      "notes": "Index realtime amount/volume unit remains WARN-only after task013."
+    }
+  },
+  "baostock": {
+    "daily_kline": {
+      "price_unit": "yuan",
+      "volume_unit": "share",
+      "amount_unit": "yuan",
+      "pct_chg_unit": "percent",
+      "confidence": "medium",
+      "notes": "Baostock daily volume is treated as share; confidence is not high because task013 requires documented cross-source freeze."
+    },
+    "trade_calendar": {
+      "date_unit": "YYYY-MM-DD",
+      "confidence": "medium"
+    }
+  },
+  "adata": {
+    "lite_realtime_quotes": {
+      "price_unit": "yuan",
+      "volume_unit": "share_or_lot_to_confirm",
+      "amount_unit": "yuan_or_unknown",
+      "pct_chg_unit": "percent",
+      "confidence": "low",
+      "notes": "adata is lite-only and must not be promoted to full realtime."
+    },
+    "index_realtime": {
+      "price_unit": "yuan",
+      "volume_unit": "share_or_lot_to_confirm",
+      "amount_unit": "yuan_or_unknown",
+      "pct_chg_unit": "percent",
+      "confidence": "low",
+      "notes": "Optional index path requires explicit verification before strong consistency use."
+    }
+  },
+  "akshare_hist": {
+    "daily_kline": {
+      "price_unit": "yuan",
+      "volume_unit": "lot",
+      "amount_unit": "yuan",
+      "pct_chg_unit": "percent",
+      "confidence": "medium",
+      "notes": "Virtual policy name used to compare AKShare high-frequency hist path."
+    }
+  },
+  "akshare_stock_zh_a_daily_low_frequency": {
+    "daily_kline": {
+      "price_unit": "yuan",
+      "volume_unit": "share_or_lot_to_confirm",
+      "amount_unit": "yuan",
+      "pct_chg_unit": "percent_or_derived",
+      "confidence": "low",
+      "notes": "Virtual policy name used for low-frequency AKShare fallback comparison."
+    }
+  },
+  "unit_test_yi_yuan": {
+    "amount_check": {
+      "amount_unit": "yi_yuan",
+      "confidence": "medium"
+    }
+  },
+  "unit_test_ratio": {
+    "pct_check": {
+      "pct_chg_unit": "ratio",
+      "confidence": "medium"
+    }
+  },
+  "unit_test_unknown": {
+    "daily_kline": {
+      "price_unit": "yuan",
+      "volume_unit": "unknown",
+      "amount_unit": "unknown",
+      "pct_chg_unit": "unknown",
+      "confidence": "low"
+    }
+  },
+  "fake": {
+    "realtime_quotes": {
+      "price_unit": "yuan",
+      "volume_unit": "share",
+      "amount_unit": "yuan",
+      "pct_chg_unit": "percent",
+      "confidence": "medium",
+      "notes": "Deterministic offline test adapter for adapter contract and router smoke tests; not a real market data source."
+    },
+    "daily_kline": {
+      "price_unit": "yuan",
+      "volume_unit": "share",
+      "amount_unit": "yuan",
+      "pct_chg_unit": "percent",
+      "confidence": "medium",
+      "notes": "Deterministic offline test adapter for adapter contract and router smoke tests; not a real market data source."
+    }
+  }
+}

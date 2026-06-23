@@ -1,0 +1,12 @@
+[
+  {
+    "ip": "180.153.18.170",
+    "port": 7709,
+    "source": "verified_current"
+  },
+  {
+    "ip": "119.147.212.81",
+    "port": 7709,
+    "source": "manual_seed"
+  }
+]

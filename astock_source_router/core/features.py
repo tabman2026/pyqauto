@@ -1,0 +1,30 @@
+from __future__ import annotations
+
+DAILY_KLINE = "daily_kline"
+REALTIME_QUOTES = "realtime_quotes"
+FULL_REALTIME_QUOTES = "full_realtime_quotes"
+LITE_REALTIME_QUOTES = "lite_realtime_quotes"
+TRADE_CALENDAR = "trade_calendar"
+MINUTE_KLINE = "minute_kline"
+INDEX_REALTIME = "index_realtime"
+STOCK_BASIC = "stock_basic"
+
+ALL_FEATURES = {
+    DAILY_KLINE,
+    REALTIME_QUOTES,
+    FULL_REALTIME_QUOTES,
+    LITE_REALTIME_QUOTES,
+    TRADE_CALENDAR,
+    MINUTE_KLINE,
+    INDEX_REALTIME,
+    STOCK_BASIC,
+}
+
+REALTIME_FEATURES = {
+    REALTIME_QUOTES,
+    FULL_REALTIME_QUOTES,
+    LITE_REALTIME_QUOTES,
+    INDEX_REALTIME,
+    MINUTE_KLINE,
+}
+POST_MARKET_FEATURES = {DAILY_KLINE, TRADE_CALENDAR, STOCK_BASIC}

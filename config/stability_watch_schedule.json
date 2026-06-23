@@ -1,0 +1,18 @@
+{
+  "task_name": "A股行情源路由器_稳定性观察",
+  "default_time": "15:40",
+  "schedule": "DAILY",
+  "script": "scripts/run_stability_watch_windows.bat",
+  "required_env": {
+    "ENABLE_STABILITY_WATCH": "1"
+  },
+  "trade_day_filter": true,
+  "non_trading_day_action": "SKIP，不计入5日观察",
+  "forbidden_tasks": [
+    "S0",
+    "QMT",
+    "券商账户",
+    "自动交易",
+    "交易建议"
+  ]
+}
