@@ -6,21 +6,64 @@ on:
       - "v*"
 
 jobs:
-  publish:
+  test:
     runs-on: ubuntu-latest
-    environment: pypi
-    permissions:
-      contents: read
-      id-token: write
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install build
-        run: python -X utf8 -m pip install build
+      - name: Install full test dependencies
+        run: |
+          python -X utf8 -m pip install --upgrade pip
+          python -X utf8 -m pip install -e ".[dev,all]"
+      - name: Run tests
+        run: python -X utf8 -m pytest -q
+      - name: Ruff
+        run: python -X utf8 -m ruff check .
+      - name: Release scan
+        run: python -X utf8 scripts/check_release.py
+      - name: Offline smoke test
+        run: python -X utf8 scripts/smoke_test.py
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install build tools
+        run: |
+          python -X utf8 -m pip install --upgrade pip
+          python -X utf8 -m pip install build twine
       - name: Build distributions
         run: python -X utf8 -m build
+      - name: Check distributions
+        run: python -X utf8 -m twine check dist/*
+      - name: Scan distribution contents
+        run: python -X utf8 scripts/check_dist_contents.py dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: pypi
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

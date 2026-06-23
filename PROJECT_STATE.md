@@ -1,3 +1,29 @@
+# TASK033.1 UPDATE - 2026-06-23
+
+Task033.1 release target is `pyqauto` version `1.0.0rc2` as a prerelease
+candidate. This task must not publish final `1.0.0`.
+
+RC2 scope:
+
+- Restore the frozen `pyqauto kline` CLI command.
+- Restore `pytdx>=1.72` as a core dependency according to the `0.3.1` public
+  install contract and V1 K-line freeze.
+- Split GitHub Actions CI into minimal install and full dependency validation.
+- Gate PyPI Trusted Publishing behind test, build, `twine check`, and
+  distribution content scan jobs in the publish workflow.
+- Add CLI command snapshot, help-without-network, installed wheel CLI, pytdx
+  import boundary, and publish workflow gating tests.
+
+Audit conclusion:
+
+- `1.0.0rc1` remains preserved and is not overwritten.
+- V1 Python API, field meanings, default source policy, fallback ordering, and
+  audit log structure are unchanged.
+- No new data source, adapter, architecture layer, trading system, strategy,
+  prediction, stock-picking, broker, QMT, account, or automated trading behavior
+  is introduced.
+- RC2 remains a prerelease candidate only.
+
 # TASK033 UPDATE - 2026-06-23
 
 Task033 release target is `pyqauto` version `1.0.0rc1` as a prerelease

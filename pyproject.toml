@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pyqauto"
-version = "1.0.0rc1"
+version = "1.0.0rc2"
 description = "A local multi-source router for free, no-registration A-share market data adapters."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -25,6 +25,7 @@ classifiers = [
 ]
 dependencies = [
   "pandas>=1.5",
+  "pytdx>=1.72",
 ]
 
 [project.scripts]
@@ -46,6 +47,8 @@ all = [
   "mootdx>=0.11.0",
 ]
 dev = [
+  "build>=1.2",
+  "hatchling>=1.21",
   "pytest>=7.0",
   "ruff>=0.6.0",
   "mypy>=1.8",
@@ -66,6 +69,7 @@ include = [
   "/PROJECT_STATE.md",
   "/CHANGELOG.md",
   "/RELEASE_NOTES_1.0.0rc1.md",
+  "/RELEASE_NOTES_1.0.0rc2.md",
   "/LICENSE",
   "/THIRD_PARTY_NOTICES.md",
   "/pyproject.toml",

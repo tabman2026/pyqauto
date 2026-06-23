@@ -16,6 +16,7 @@ from astock_source_router.core.models import RouterConfig  # noqa: E402
 from astock_source_router.core.policy import DEFAULT_SOURCE_POLICY, SourcePolicy  # noqa: E402
 from astock_source_router.core.router import MarketRouter  # noqa: E402
 from pyqauto import QuoteRouter  # noqa: E402
+from pyqauto.cli import CLI_COMMANDS, build_parser  # noqa: E402
 from pyqauto.meta import meta_decision, system_brain  # noqa: E402
 from pyqauto.stability import VersionPolicy, detect_drift, stability_status  # noqa: E402
 
@@ -29,6 +30,26 @@ EXPECTED_POLICY = {
     "minute_kline": ["pytdx"],
     "stock_basic": ["baostock", "akshare"],
 }
+EXPECTED_CLI_COMMANDS = {
+    "daily",
+    "diagnose",
+    "full",
+    "index",
+    "kline",
+    "minute",
+    "probe-pytdx",
+    "realtime",
+    "source-schema-probe-live",
+}
+
+
+def _cli_commands_from_parser() -> set[str]:
+    parser = build_parser()
+    for action in parser._actions:
+        choices = getattr(action, "choices", None)
+        if isinstance(choices, dict) and choices:
+            return set(choices)
+    return set()
 
 
 def _check(name: str, passed: bool, detail: str) -> dict[str, Any]:
@@ -188,6 +209,12 @@ def main() -> int:
             "pyqauto_packaged",
             'name = "pyqauto"' in pyproject_text and '"pyqauto"' in pyproject_text,
             "pyqauto is the formal distribution and packaged namespace",
+        ),
+        _check(
+            "cli_command_snapshot",
+            CLI_COMMANDS == EXPECTED_CLI_COMMANDS
+            and _cli_commands_from_parser() == EXPECTED_CLI_COMMANDS,
+            "frozen CLI commands are present",
         ),
         _check(
             "quote_router_public_alias",

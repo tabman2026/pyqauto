@@ -1,3 +1,37 @@
+# 1.0.0rc2 - 2026-06-23
+
+Release candidate only. This is not the final 1.0.0 release.
+
+### Fixed
+
+- Restored the frozen `pyqauto kline` CLI command and preserved the installed
+  console script entry point `pyqauto = pyqauto.cli:main`.
+- Restored `pytdx>=1.72` as a core dependency based on the `0.3.1` public
+  install contract and the frozen V1 K-line API.
+- Fixed GitHub Actions dependency installation by splitting minimal install and
+  full dependency test jobs.
+- Gated PyPI Trusted Publishing behind release-workflow test, build,
+  `twine check`, and distribution content scan jobs.
+
+### Added
+
+- CLI command snapshot tests.
+- CLI help-without-network tests.
+- Installed wheel CLI verification for `pyqauto kline --help`.
+- Static publish workflow gating tests.
+- Distribution content scan for wheel and sdist release artifacts.
+
+### Audit
+
+- Version target is exactly `1.0.0rc2`; the Git tag target is `v1.0.0rc2`.
+- `1.0.0rc1` remains preserved and is not overwritten.
+- V1 Python API, field meanings, source policy, fallback ordering, and audit log
+  structure remain unchanged.
+- This remains a prerelease candidate, not final `1.0.0`.
+- The project remains market-data infrastructure only. It does not provide
+  investment advice, trading execution, strategy signals, broker integration,
+  QMT integration, or automated trading logic.
+
 # 1.0.0rc1 - 2026-06-23
 
 Release candidate only. This is not the final 1.0.0 release.

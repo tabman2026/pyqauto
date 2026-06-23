@@ -5,7 +5,7 @@ This document freezes the pyqauto v1 public router API surface for the formal
 legacy `astock_source_router` namespace remain compatibility aliases to the same
 implementation; they must not fork behavior.
 
-Freeze candidate version: `1.0.0rc1`. This is a prerelease candidate only and
+Freeze candidate version: `1.0.0rc2`. This is a prerelease candidate only and
 must not be treated as the final `1.0.0` release.
 
 ## Frozen APIs

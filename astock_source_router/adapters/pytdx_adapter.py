@@ -350,7 +350,10 @@ class PytdxAdapter(BaseMarketDataAdapter):
         try:
             from pytdx.hq import TdxHq_API, TDXParams  # type: ignore
         except Exception as exc:  # pragma: no cover - optional dependency
-            raise SourceUnavailableError("pytdx is not installed. Install astock-source-router[tdx].") from exc
+            raise SourceUnavailableError(
+                "pytdx is required for pyqauto TDX realtime and minute K-line support. "
+                "Install pyqauto normally or install pytdx>=1.72."
+            ) from exc
         return TdxHq_API, TDXParams
 
     def _new_api(self) -> Any:

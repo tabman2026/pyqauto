@@ -1,12 +1,12 @@
-# pyqauto 1.0.0rc1 RC Testing Guide
+# pyqauto 1.0.0rc2 RC Testing Guide
 
-`pyqauto==1.0.0rc1` is a prerelease candidate. It is not the final `1.0.0`
+`pyqauto==1.0.0rc2` is a prerelease candidate. It is not the final `1.0.0`
 release.
 
 Install the exact RC:
 
 ```bash
-python -X utf8 -m pip install pyqauto==1.0.0rc1 -i https://pypi.org/simple
+python -X utf8 -m pip install pyqauto==1.0.0rc2 -i https://pypi.org/simple
 ```
 
 Install the latest prerelease candidate:
@@ -23,6 +23,7 @@ python -X utf8 -m pip install --force-reinstall pyqauto==0.3.1 -i https://pypi.o
 
 Focus RC testing on:
 
+- Installed CLI command availability, including `pyqauto kline --help`.
 - QuoteRouter core quote APIs.
 - Governance.
 - Reliability Graph.

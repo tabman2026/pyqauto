@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  minimal-install:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -18,8 +18,47 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install package
-        run: python -X utf8 -m pip install -e ".[dev,test]"
+        run: |
+          python -X utf8 -m pip install --upgrade pip
+          python -X utf8 -m pip install .
+      - name: Import public API
+        run: |
+          python -X utf8 -c "import pyqauto; from pyqauto import QuoteRouter; assert pyqauto.__version__"
+      - name: CLI help snapshot
+        run: |
+          pyqauto --help
+          pyqauto realtime --help
+          pyqauto full --help
+          pyqauto index --help
+          pyqauto minute --help
+          pyqauto daily --help
+          pyqauto kline --help
+          pyqauto kline 000001 --period 15m --count 10 --help
+          pyqauto diagnose --json
+          pyqauto probe-pytdx --help
+          pyqauto source-schema-probe-live --help
+
+  full-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install full test dependencies
+        run: |
+          python -X utf8 -m pip install --upgrade pip
+          python -X utf8 -m pip install -e ".[dev,all]"
       - name: Run tests
         run: python -X utf8 -m pytest -q
+      - name: Ruff
+        run: python -X utf8 -m ruff check .
       - name: Release scan
         run: python -X utf8 scripts/check_release.py
+      - name: Offline smoke test
+        run: python -X utf8 scripts/smoke_test.py
